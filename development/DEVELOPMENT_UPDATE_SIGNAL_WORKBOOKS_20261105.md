@@ -1,0 +1,9 @@
+# Development update — organized signal workbooks, 5 November 2026
+
+The completed package is `runs/signal_workbooks_20261105_003/`. Start with `SIGNAL_OVERVIEW.xlsx`. Each retained signal has an individual workbook with Summary, compact Signal data, Definitions, Findings, Sources, Lineage, original Evidence detail and source-specific raw sheets. Coverage and owner-review sheets are included where applicable. Historical DE context remains separate and the additional DE extraction remains deferred.
+
+The same directory includes consolidated definitions/findings, verbatim dated reports and requirements, and a development snapshot with the continuing active package, SQL, tests, inputs and analysis files. All 626 evidence records are retained without new triggers or changed assessment dates. SIG03 and SIG04 show missing/empty coverage; no events are invented.
+
+Saved-XLSX checks independently compare every original evidence/native value, all compact-view cached formulas and client summary counts, and verify absence of Excel error cells. Text IDs, CRR codes/placeholders and timestamps are retained exactly. Compact-view zero guards use LEN to preserve real or explicitly imputed zero separately from blank. Seven workbooks contain 67 worksheets. Worksheet excerpts were rendered and visually reviewed; the renderer can abbreviate numeric-looking formula text in previews, while the saved XLSX cells retain full strings with text formats.
+
+The copied development workspace passed the 686-file original integrity check and all 70 tests. A fresh portable sample reference rebuild reproduced 604 core / 614 sample-combined records; the separate full-CRR result remains 626. Development-only observed links are not production approvals. Original source files, prior results, active engine and shipped manifest are unchanged.

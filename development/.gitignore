@@ -1,0 +1,34 @@
+# Local client data/evidence and derived outputs: review explicitly before sharing in git.
+/data/
+/sql/
+/sql_sample_extract/
+/analysis/
+/results/
+/runs/*
+!/runs/README.md
+*.sqlite
+*.sqlite-*
+*.db
+*.csv
+*.xlsx
+*.docx
+*.zip
+*.base64
+__pycache__/
+*.py[cod]
+.DS_Store
+pvd_client_cohort_lab/runs/
+pvd_client_cohort_lab/imported/
+pvd_client_cohort_lab/starburst_exports/
+pvd_client_cohort_lab/generated_sql/
+
+# Repository copy (development-2): raw inputs stay in ../signal_workbooks_20261105_003.zip and are
+# restored with tools/extract_inputs.py. The meeting-aligned run's review outputs are shared in git;
+# its intermediate SQLite/cohort folders are not.
+!/runs/aligned_20261105_004/
+/runs/aligned_20261105_004/*
+!/runs/aligned_20261105_004/*.csv
+!/runs/aligned_20261105_004/*.md
+!/runs/aligned_20261105_004/*.json
+!/DATA_CATALOG.csv
+!/Bond Radar Requirements.docx

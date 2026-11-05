@@ -1,0 +1,1 @@
+No approved source-compatible identifiers are available. Review PVD-native identifiers, or use DRR/Counterparty/CLO group anchors to discover CIN/GID mappings and approve those before regenerating. Name candidates are in a separate query where verified name columns exist.

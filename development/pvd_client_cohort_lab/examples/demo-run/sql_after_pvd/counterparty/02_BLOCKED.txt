@@ -1,0 +1,1 @@
+The proposed Counterparty catalog table and date format require live confirmation. Set counterparty_catalog_confirmed=true only after verifying them, then generate a new SQL pack.

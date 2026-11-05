@@ -1,0 +1,25 @@
+{
+  "as_of": "2026-10-30",
+  "created_utc": "2026-11-02T11:29:22.519015+00:00",
+  "membership_policy": "Reviewed discovery cohort; historical membership is not inferred",
+  "code_sha256": "17a7965caef55513ed5c8be8738d2cedf28b2a8d4929a0d266c34bd460b32d5b",
+  "config_sha256": "3267d57c6447f4611923e3f65512a0acffdd8d72e90a8a6f7080b803cc549d87",
+  "approved_file_sha256": null,
+  "inputs": [
+    {
+      "source": "pvd",
+      "path": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/inputs_pvd/pvd.csv",
+      "sha256": "5a6d7c1017903940b8346e58152e6e00427f6eb1e6dcff08d1bba84f474bddf8",
+      "rows": 6,
+      "metadata": {
+        "synthetic": true,
+        "source": "pvd",
+        "qualification": "Deliberately constructed fixture data, not bank records."
+      }
+    }
+  ],
+  "issues": [
+    "PVD relationship/supergroup/key columns retain their own namespaces. No CIN/GID interpretation was inferred."
+  ],
+  "approved_links_count": 0
+}

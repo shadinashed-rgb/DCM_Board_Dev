@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+runs/
+generated_sql/
+imported/
+inputs/*.csv
+!inputs/approved_identifiers.csv
+inputs/*.metadata.json
+inputs/schemas/
+inputs/queries/
+inputs/pvd/
+inputs/clo/
+inputs/drr/
+inputs/counterparty/
+inputs/facilities/
+inputs/kyc/
+inputs/covenants/

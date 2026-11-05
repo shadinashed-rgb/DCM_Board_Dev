@@ -1,0 +1,7 @@
+{
+  "cohort_run": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/04_reviewed_coverage",
+  "cohort_manifest_sha256": "e6e79ef2a47531ea6f56ebe1330f32fee272e0bc55e72888595544062ac06b70",
+  "adapter_sha256": "17a7965caef55513ed5c8be8738d2cedf28b2a8d4929a0d266c34bd460b32d5b",
+  "membership_policy": "Reviewed discovery cohort; historical membership is not inferred",
+  "identity_level": "COHORT_GROUP identifiers are test grouping keys, not legal-entity equivalence."
+}

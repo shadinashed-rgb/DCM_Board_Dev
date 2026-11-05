@@ -1,0 +1,15 @@
+{
+  "cohort_name": "Returned extract recovery window, 2 November 2026",
+  "membership_policy": "Reviewed discovery cohort; historical membership is not inferred",
+  "groups": [
+    {"mastergroup_id":"MG001356","name":"VODAFONE","aliases":["VODAFONE"]},
+    {"mastergroup_id":"MG102229","name":"Siemens Energy","aliases":["SIEMENS ENERGY"]},
+    {"mastergroup_id":"MG101624","name":"SOFTBANK","aliases":["SOFTBANK","SOFT BANK"]}
+  ],
+  "freshness_days":45,
+  "csv_delimiter":",",
+  "invalid_identifiers":["XNA","NO SPG","NO MSG","N/A","0"],
+  "counterparty_catalog_confirmed":false,
+  "counterparty_lookback_days":120,
+  "source_windows":{"pvd":{"start":"2026-07-01","end":"2026-10-30"}}
+}
