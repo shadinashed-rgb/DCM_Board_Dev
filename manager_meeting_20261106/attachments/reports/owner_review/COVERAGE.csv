@@ -1,0 +1,7 @@
+﻿signal_id,expected_source,coverage_state,note
+SIG03A,derivatives trade/booking data,source_missing,"No derivatives trade source supplied. Needs trade id, product (IRS/CCS/FX swap), maturity, notional, linked debt and roll indicator."
+SIG03B,pre-hedge enquiry / pricing requests,source_missing,Signal does not exist in markets systems today; Bloomberg chat suggested as a possible source (open).
+SIG04,delta.prod_party_gda.kyc,empty_export,"Target KYC export is header-only (326 columns, 0 rows)."
+SIG05,CME call reports,excluded,Excluded pending MNPI handling and entitlements.
+SIG06,financial covenant tests,source_missing,"Genuine financial covenant tests (net debt/EBITDA actual vs maximum, test date) not supplied; the file labelled covenants is Counterparty data and stays quarantined."
+SIG07,CME call reports,source_not_integrated,Rating advisory requests are recorded only in call reports; same CME dependency as SIG05.
