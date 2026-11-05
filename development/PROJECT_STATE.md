@@ -1,0 +1,279 @@
+# Consolidated project knowledge — 5 November 2026 (rule version development-2)
+
+> **Update, 5 November 2026.** The signal rules now follow the decisions captured in the DCM meetings. The full requirement-by-requirement comparison is in `../docs/MEETING_ALIGNMENT_REVIEW.md`, and the change log is in `DEVELOPMENT_UPDATE_MEETING_ALIGNMENT_20261105.md`. Sections below that changed are marked **(development-2)**. The development-1 statements they replace are kept in the archived package `signal_workbooks_20261105_003.zip`.
+
+## Purpose, scope and working stage
+
+Build a Bond Radar dashboard for DCM bankers and originators to identify and investigate clients that may need bond financing. We are still developing and testing source extraction, entity coverage, source grain and signal evidence on three known clients. Evidence is not a prediction that a client will issue a bond.
+
+| Mastergroup | Client |
+| --- | --- |
+| MG001356 | VODAFONE |
+| MG102229 | Siemens Energy |
+| MG101624 | SOFTBANK |
+
+**Signal catalogue (development-2):**
+
+- SIG01: material drawing on a Cat A bank facility
+- SIG02: new RCF / term loan / bridge, dated by credit approval
+- SIG03A: swap roll on maturing debt
+- SIG03B: new pre-hedge swap enquiry
+- SIG04: KYC onboarding / signatory refresh
+- SIG06: financial covenant breach or pressure
+- SIG07: rating-advisory request recorded in call reports
+
+**Out of scope or not a signal:**
+
+- SIG05 (CME call-report keywords) remains excluded pending MNPI and entitlement decisions; SIG07 shares the same dependency.
+- "Number of investor sales" was dropped by DCM as a weak signal, because HSBC initiates the investor interaction.
+- Two datasets are **context, not signals**:
+  - `CTX_UTIL`: facility utilisation
+  - `CTX_CREDIT`: Facilities/PVD credit category and Application Ratings CRR
+- PVD sector aggregate remains excluded from active scope.
+
+The user prefers one practical sequence, exact SQL/CSV names and a separate folder for each round. SQL is executed manually in Starburst, downloaded to a drive, then transferred locally. Python never contacts Starburst. Planning turns that say "do not change" must remain read-only.
+
+## Meeting decisions now encoded (development-2)
+
+| Decision | Source | Where encoded |
+| --- | --- | --- |
+| Any drawing on any **Cat A** bank facility (RCF, term loan, bilateral) above **EUR 50m** is material; it does not matter whether the facility is labelled RCF | Jerome, DCM meeting | `engine/config.json` `sig01` (products, `eligible_limit_categories`, `materiality`) |
+| Two amounts: HSBC's own share, and the inferred total = HSBC drawing ÷ participation share; below EUR 50m total is noise for IG corporates; parent and subsidiary both count | Jerome | `materiality` (HSBC share as a lower bound, inferred total when a participation field exists) |
+| Bridge/new facility date = **internal credit approval date**, not signing | Jerome, Simonti | `sig02.event_fields`; `alignment.py` links Application Ratings `approval_dt` |
+| Pre-hedging is two independent signals: (a) roll of an existing swap tied to maturing debt, (b) enquiry for a new pre-hedge swap; FX swaps are a strong indicator | MSS team, Jerome | `SIG03A` / `SIG03B` (source missing) |
+| Rating advisory requests are recorded in **call reports**; rare and not automated | Jerome | `SIG07` source = CME call reports (not integrated) |
+| Covenant pressure = leverage within **half a turn** of the covenant maximum (e.g. ≥ 2.5x against 3.0x) | Jerome | `covenants.pressure_headroom_turns = 0.5` |
+| Investor-sales count dropped | DCM / Chirag, agreed by Jerome | `dropped_signals` in config |
+| Dashboard rather than email triggers; daily data preferred; LoanIQ is the RCF source; flag maturity windows | Use Case 6 meeting | Dashboard requirements (daily refresh and maturity windows not yet built) |
+
+## Current evidence and reproducible result (development-2)
+
+Latest run: `runs/aligned_20261105_004/` (review: `runs/aligned_20261105_004/REVIEW.md`). Inputs and assessment dates are unchanged: core 3 November 2026, CRR 4 November 2026 from 3 November snapshots.
+
+| Dataset | Records | Interpretation |
+| --- | ---: | --- |
+| SIG01 | 8 | 4 comparisons on the blank default drawn field (zero-imputed) plus 4 on the populated USD field; 0 material, because FX and participation are not configured |
+| SIG02 | 63 | Facility contexts, event date = credit approval date where linked; 9 within 90 days; 13 withheld as ambiguous |
+| SIG03A, SIG03B, SIG04, SIG06, SIG07 | 0 | Source missing, empty or not integrated (see coverage) |
+| CTX_UTIL | 442 | Utilisation context; 5 ratios above 70% |
+| CTX_CREDIT | 118 | 96 Facilities/PVD category contexts + 22 Application Ratings CRR (18 populated, 4 unavailable) |
+| **Total** | **631** | development-1 had 626: all 626 map forward, plus 5 new SIG01 comparisons (`RECONCILIATION_DEV1.csv`) |
+
+Business trigger values remain blank because no definition is marked verified. The 90-day window and 30-day freshness setting are still test parameters. Root `run_reference.py` reproduces the run; `REFERENCE_EXPECTATIONS.json` now holds the development-2 sample-reference counts (609 core / 619 combined), and the development-1 expectations (604 / 614) are kept in `REFERENCE_EXPECTATIONS_development-1.json`.
+
+In the git repository the raw inputs are not committed. Restore them with `python3 -B tools/extract_inputs.py`, which copies `data/` and `sql/` out of `../signal_workbooks_20261105_003.zip` and verifies each file hash.
+
+## Selected source coverage
+
+| Source | Selected raw export | Important qualification |
+| --- | ---: | --- |
+| CLO | 276 rows, 401 columns | 30/31 October and 2 November; 5 distinct sub-limits. `facility_drawn_amount` is blank on every row; `ag_acc_bal_drawn_sub_lim_usd` is populated |
+| Counterparty | 167 rows, 100 columns | Point-in-time reference, including conflict/non-target candidates |
+| DRR | 660 rows, 152 columns | 642 native target rows; other group/no-group records retained for review |
+| Facilities | 105 rows, 182 columns | Latest supplied GB/AE data; `limit_cat` CAT-A on 85 rows; `loan_approva_dt` is a `0` placeholder on 98 rows |
+| KYC | 0 rows, 326 columns | Header-only valid export; absence of supplied case data, not proof of no activity |
+| PVD | 143 rows, 90 columns | All 30 September; stale relative to the November assessment |
+| Application Ratings (full) | 722 rows, 30 columns | Vodafone 477, Siemens 238, SoftBank 7, all 3 November; supplies CRR context and SIG02 approval dates |
+| Financial covenants | Not available | The latest purported covenant export is Counterparty data (quarantined) |
+| Derivatives trades / pre-hedge enquiries | Not identified | Needed for SIG03A / SIG03B |
+| CME call reports | Not integrated | Needed for SIG07 (and SIG05) |
+
+The earlier Siemens DE Facilities file has 349 raw rows reducing to 25 candidate effective facility keys at 30 October. Keep it as separate history; the additional DE extraction remains deferred.
+
+## Decision history that changes interpretation
+
+| Decision / learning | Current position |
+| --- | --- |
+| Start identity discovery with PVD | User preference; supporting native CLO/DRR/Counterparty IDs improve coverage |
+| CIN/GID/PVD namespaces | Distinct until verified; no inferred CIN from joi_key/relationship-ID shape |
+| Missing CLO drawn, 3 November | Zero only for SIG01, with explicit current/prior imputation flags; imputed comparisons are never assessed for materiality |
+| Counterparty catalog, 3 November | Delta, not Hive: delta.prod_party_gda.counterparty_core |
+| Facilities Limit_Cat | **development-2:** Cat A is the SIG01 eligibility filter (meeting); shown as `CTX_CREDIT` context, no longer a SIG07 advisory candidate |
+| Application Ratings, 4 November | CRR only; **development-2:** emitted as `CTX_CREDIT` context; also supplies SIG02 approval dates |
+| Rating advisory source | **development-2:** CME call reports (meeting); SIG07 has no evidence until CME is integrated |
+| Utilisation > 70% | **development-2:** context (`CTX_UTIL`); it is not the covenant-pressure definition |
+| Latest-record flags | HISTORICAL can have open effective periods; do not select CURRENT blindly |
+| Row reduction | Preserve facility parent/product/borrower/version grains; do not blindly drop duplicate facility IDs |
+| Covenants returned file | Counterparty payload under misleading filename; quarantine |
+| Legacy CLO solution | Review its enrichment algorithm only; do not adopt its whole solution |
+
+## SIG01 — material drawing on a Cat A bank facility (development-2)
+
+**Definition (meeting).** Any drawing by a client on any Cat A bank facility (RCF, term loan, bilateral or other direct lending) above EUR 50m is material DCM information, whether or not the facility is labelled RCF. Two amounts matter:
+
+- HSBC's own drawn share
+- the inferred total facility drawing = HSBC drawing ÷ HSBC participation share (e.g. EUR 10m at 10% = EUR 100m)
+
+Below EUR 50m total is insignificant for investment-grade corporates. Parent and subsidiary drawings both count, with the threshold filtering out small local drawings.
+
+**Engine rule.**
+
+- **Products:** CLO `REV` and `TERM`. Blank products stay ineligible: they are unknown, not proven non-bank.
+- **Measures:** the drawing increase is current drawn minus prior drawn for the same sub-limit, keeping the actual date gap.
+- **Materiality:**
+  - converts the increase to EUR only with a configured FX rate; no fallback conversion
+  - HSBC share ≥ EUR 50m is material, because HSBC's share can never exceed the whole facility
+  - otherwise the inferred total is tested when a participation share is available (`participation_share_field`, or `deal_indicator_sole_lender = Y` meaning 100%)
+- **Cat A:** looked up from Facilities `limit_cat` where the CLO sub-limit ID equals a Facilities `facility_id`. This is an observed development link, not an approved cross-source identity.
+- **Second comparison:** a separate comparison runs on `ag_acc_bal_drawn_sub_lim_usd`, the only populated CLO drawn field. It is never mixed with the blank default field.
+
+**Current result.**
+
+- **Vodafone:** two REV sub-limits, Cat A. Default field imputed zero; USD field shows no increase.
+- **Siemens:** one REV sub-limit, no matching Facilities ID, so Cat A is unknown. Same zero results.
+- **SoftBank TERM sub-limit `00010341075552511210201`:** Cat A, USD 179.7m drawn, but no prior snapshot, so no increase can be computed.
+- **SoftBank USD 200m sub-limit `00010341075552607090201`:** unchanged across snapshots and has a blank CLO product, so it is not assessed.
+
+No comparison is material yet.
+
+**Open:**
+
+- the authoritative drawn field (LoanIQ named as source)
+- FX source and date
+- the participation-share field
+- the comparison horizon
+- validation of the CLO ↔ Facilities ID link
+
+## SIG02 — new RCF / term loan / bridge, dated by credit approval (development-2)
+
+**Definition (meeting).** Use the internal credit approval date (earlier than signing) as the event date.
+
+**Engine rule.**
+
+1. Facilities `loan_approva_dt` is tried first. It is a `0` placeholder in the current export.
+2. Otherwise `facility_creation_date` is used and labelled as a candidate approval date.
+3. `alignment.py` then attaches Application Ratings `approval_dt` through `credit_proposal_serial_no`, preferring the same CIN. That becomes the event date, and the 90-day test is re-evaluated on it.
+
+**Result.**
+
+- **Counts:** 105 supplied rows → 63 source/country keys. 13 contexts are withheld as ambiguous (conflicting products or dates), leaving 50 usable.
+- **Approval links:** all 63 keys link by serial and CIN; 50 usable contexts receive an approval date.
+- **Approval vs creation date:** equal for 9 of 50. For older facilities, approval follows creation by weeks (e.g. created 12 Apr 2005, approved 10 Jun 2005), and the serial appears to encode the creation date.
+- **90-day candidates (9):**
+  - the 8 development-1 facilities (seven Vodafone approved 17 September; Siemens AE FGL AED 40m approved 6 October)
+  - SoftBank FCL `00010341075552511210201`, created 9 July and approved 17 September 2026
+
+**Open:** confirm that the linked application approval is the approval of the new facility rather than a later review or renewal, the product dictionary (RCF / term / bridge), and source/country publishing rules (Siemens DE).
+
+## SIG03A / SIG03B — derivatives and pre-hedging (development-2)
+
+Split per the meeting into two independent signals.
+
+**SIG03A — swap roll tied to maturing debt.** Needs derivatives trade/booking data:
+
+- client identifiers
+- trade ID
+- product: IRS, CCS or FX swap (FX swaps first)
+- trade and maturity dates
+- notional and currency
+- linked debt reference
+- roll/novation indicator
+
+DRR carries FSWP and FFEX limit lines, which are limits, not trades; they are a discovery lead only.
+
+**SIG03B — enquiry for a new pre-hedge swap.** Needs:
+
+- client identifiers
+- enquiry ID and date
+- product
+- status
+- notional and currency
+- financing purpose
+
+The signal does not exist in markets systems today. Bloomberg chat was suggested as a source; that question is open.
+
+Neither source is supplied, so there is no evidence. Executed facilities cannot stand in for either signal.
+
+## SIG04 — KYC activity
+
+Latest exported data are empty. Earlier unrelated KYC rows helped inspect the schema and case purposes; they do not establish target-client events. cdd_topco_legal_name is ARRAY(varchar); use the supplied array-aware SQL (ARRAY_JOIN). mg_parent_grid and groupguci do not automatically share the mastergroup namespace. Need a known case/entity lookup and definitions for NTB/Trigger/Periodic/Remediation, case date and eligibility.
+
+## SIG06 — financial covenant breach or pressure (development-2)
+
+**Definition (meeting).** Covenant pressure exists when a leverage covenant (e.g. net debt / EBITDA) is within half a turn of its maximum:
+
+| Covenant maximum | Pressure from |
+| --- | --- |
+| 3.0x | 2.5x |
+| 4.0x | 3.5x |
+| 2.0x | 1.5x |
+
+A breach or pressure may point to a hybrid or refinancing need.
+
+**Engine rule.** For approved financial covenant tests with a maximum-type operator (`<`, `<=`):
+
+- headroom = maximum − actual
+- pressure when headroom ≤ 0.5
+- breach when the compliance condition fails
+
+Status stays needs_validation until metric meaning, units, operator semantics and approval state are verified.
+
+**Data.** No genuine financial covenant tests are available. Earlier samples were nonfinancial reporting obligations ("Overdue" is not a financial breach), and the file labelled covenants is Counterparty data (quarantined). SIG06 therefore has no evidence. Required fields:
+
+- covenant metric
+- actual/final value
+- maximum threshold
+- operator
+- test date
+- approval state
+- facility/relationship link
+
+**Utilisation is now context (`CTX_UTIL`).** The proposed strict > 70% test still runs on compatible numerator/denominator pairs:
+
+- 642 native DRR target rows reduce to 405 candidate exposures: 57 usable ratios and 348 unavailable
+- CLO and PVD contexts are unavailable
+- five ratios exceed 70%:
+
+| Client | DRR UID | Product | Limit / utilisation | Ratio |
+| --- | --- | --- | --- | ---: |
+| Vodafone | 264658583 | FGTE | EGP927660 / 874590 | 94.28% |
+| Siemens | 543509314 | FGTE | QAR1371648 / 1053379 | 76.80% |
+| Siemens | 815898281 | FCTA | EUR605104472 / 449087805 | 74.22% |
+| SoftBank | 864252253 | FLNS | USD120m / 120m | 100% |
+| SoftBank | 1234654449 | FLNS | USD1bn / 1bn | 100% |
+
+These are supporting context, not covenant pressure. The no-aggregation and no-missing-as-zero rules still apply.
+
+## SIG07 — rating advisory via call reports (development-2)
+
+**Definition (meeting).** Rating advisory requests are rare and are recorded in call reports when a senior banker discusses HSBC acting as rating advisor; they will not be automated in AI Markets. The source is CME call reports, which shares the MNPI/entitlement dependency of SIG05. SIG07 has no evidence until CME is integrated.
+
+**Former SIG07 inputs now in `CTX_CREDIT`:**
+
+- Facilities `limit_cat` / `advised_ind` / grade fields
+- PVD `drr_crr` / category fields
+- Application Ratings CRR
+
+These are credit context; Cat A also feeds SIG01 eligibility. CRR handling is unchanged:
+
+- non-placeholder `final_crr` with `crr_scale`
+- previous/proposed/approved/manual/overridden states kept separately
+- blank/N/A is unavailable, never zero or a fallback
+- competing applications and multiple CRRs per CIN kept
+- no numeric direction
+
+**Full exports:** 722 rows → 22 contexts (18 populated, 4 unavailable). Nine open-period contexts are HISTORICAL; Siemens CIN AEBBME035063734 has 2.1, 3.1 and N/A. Alternate CRA fields hold two historical Siemens agency records and remain excluded.
+
+## Enrichment, joins and freshness
+
+See DATA_MODEL.md for source contracts and the staged model. PVD starts discovery; native CLO/DRR/Counterparty IDs support it. Preserve namespaces and original values. Names are clues, not join keys. Exact ID equality across unrelated namespaces is not sufficient. The development-2 lookups are development links to validate, not approved joins:
+
+- CLO sub-limit = Facilities facility_id, for Cat A
+- Facilities serial + CIN = Application Ratings serial + CIN, for approval dates
+
+Target groups are not expanded transitively.
+
+Counterparty enrichment preserves valid original CLO group IDs, selects mapping states as of CLO dates and retains conflicts. No missing CLO group is recovered. Preserve downloaded IDs as strings. Freshness is based on exported observation/processing dates; a fresh snapshot can still contain old applications.
+
+## Known gaps and next development
+
+1. **SIG01:** the authoritative drawn field (LoanIQ), FX source/date, the participation-share field, and validation of the CLO ↔ Facilities ID link; a prior snapshot for the SoftBank TERM sub-limit; product for blank-product rows.
+2. **SIG02:** credit-team confirmation that the linked application approval is the approval of the new facility; product dictionary; Facilities publishing dates (Siemens DE).
+3. **SIG03A / SIG03B:** derivatives trade source and pre-hedge enquiry source.
+4. **SIG06:** genuine financial covenant tests (net debt / EBITDA actual vs maximum).
+5. **SIG07 / SIG05:** CME access decision (MNPI, entitlements).
+6. **SIG04:** a known KYC case and an identity route.
+7. **Dashboard:** debt-maturity windows (DASH03) and a daily refresh route (DASH04).
+8. Explicit reviewed identity mappings and coverage by group/source.
+
+NEXT_STEPS.md supplies the immediate actions.

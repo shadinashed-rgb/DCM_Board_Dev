@@ -1,0 +1,8 @@
+﻿dev1_signal,dev1_component,dev2_signal,dev2_component,records,change
+SIG01,drawing_change,SIG01,drawing_change,3,"same record, rule updated"
+SIG02,facility_creation,SIG02,facility_approval_event,63,"same record, rule updated"
+SIG06,utilisation,CTX_UTIL,utilisation,442,same record re-classified
+SIG07,crr_context,CTX_CREDIT,crr_context,22,same record re-classified
+SIG07,rating_category_context,CTX_CREDIT,facility_category_context,96,same record re-classified
+(new),,SIG01,drawing_change,1,added by development-2 rules
+(new),,SIG01,drawing_change_alt_usd,4,added by development-2 rules

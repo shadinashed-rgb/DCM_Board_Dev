@@ -1,0 +1,58 @@
+{
+  "signal_id": "SIG07",
+  "updated": "2026-11-04",
+  "advisory_trigger_verified": false,
+  "candidates": [
+    {
+      "source": "facilities",
+      "table": "delta.prod_credit_and_lending_gda.facilities_limits",
+      "stage": "samples_reviewed",
+      "fields": [
+        "limit_cat",
+        "limit_category_type",
+        "advised_ind",
+        "facility_grade_code",
+        "facility_grade_desc"
+      ],
+      "advisory_mapping_verified": false
+    },
+    {
+      "source": "pvd",
+      "table": "hive.pvd_prod_wave.pvd_omnia_drr",
+      "stage": "samples_reviewed",
+      "fields": [
+        "drr_crr",
+        "drr_fac_category",
+        "joi_facility_category"
+      ],
+      "advisory_mapping_verified": false
+    },
+    {
+      "source": "application_ratings",
+      "table": "delta.prod_credit_and_lending_gda.application_ratings",
+      "stage": "samples_reviewed_partial",
+      "fields": [
+        "final_crr",
+        "crr_scale",
+        "previous_crr",
+        "proposed_crr",
+        "approved_crr",
+        "proposed_manual_crr",
+        "overriden_crr"
+      ],
+      "user_reported_content": [
+        "S&P ratings",
+        "CRR",
+        "other rating types"
+      ],
+      "advisory_mapping_verified": false,
+      "sample_pack": "sql_templates/sig07_application_ratings_20261104",
+      "runtime_ingestion": "sig07_crr.py standalone adapter",
+      "active_evidence": "crr_context",
+      "external_agency_evidence_added": false,
+      "crr_sql_pack": "sql_templates/sig07_crr_20261104",
+      "selection": "candidate record period at latest supplied source/country/CARM snapshot; preserve competing applications"
+    }
+  ],
+  "current_application_ratings_contribution": "CRR only"
+}

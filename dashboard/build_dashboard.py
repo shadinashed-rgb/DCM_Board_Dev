@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 """Build the self-contained DCM Bond Radar signals dashboard.
 
-Reads the signal workbook package (the zip, or an already-extracted folder),
-extracts every signal workbook into one JSON payload and writes a single
-self-contained HTML file from ``template.html``. The HSBC logo is taken from the
-sample board shipped inside the package so the asset is never re-encoded.
+Reads the signal workbook package (a folder or a zip), extracts every workbook
+into one JSON payload and writes a single self-contained HTML file from
+``template.html``. The HSBC logo is taken from the LAF sample board inside the
+archived 003 package, so the asset is never re-encoded.
 
 Usage (from the repository root):
 
     python3 dashboard/build_dashboard.py \
-        --src signal_workbooks_20261105_003.zip \
+        --src signal_workbooks_20261105_004 \
+        --logo-from signal_workbooks_20261105_003.zip \
         --out dashboard/dcm_signals_dashboard.html
+
+The default package is the development-2 (meeting-aligned) one.
 
 Requires Python 3.10+ and openpyxl.  No values are recomputed or re-based:
 the dashboard shows the evidence exactly as saved in the workbooks.
@@ -32,7 +35,8 @@ except ImportError:  # pragma: no cover
     sys.exit("openpyxl is required: pip install openpyxl")
 
 HERE = Path(__file__).resolve().parent
-SIGNALS = ["SIG01", "SIG02", "SIG03", "SIG04", "SIG06", "SIG07"]
+# Workbooks in the development-2 package. SIG03 holds SIG03A and SIG03B.
+WORKBOOKS = ["SIG01", "SIG02", "SIG03", "SIG04", "SIG06", "SIG07", "CTX_UTIL", "CTX_CREDIT"]
 # Native client labels in the workbooks -> display names used on the board.
 CLIENT_DISPLAY = {
     "VODAFONE": "Vodafone",
@@ -103,6 +107,8 @@ def read_sheet(ws):
             # a single-cell line below the table is an explanatory note
             notes.append(str(vals[0]))
             continue
+        if r[0] == 'Total':
+            continue  # summary total rows are formulas over the table, not data
         rows.append(dict(zip(header, r[: len(header)])))
     return {"title": title, "notes": notes, "header": header or [], "rows": rows}
 
@@ -127,7 +133,7 @@ def extract(pkg: Package) -> dict:
         "source_inventory": compact(read_sheet(ov["Source inventory"])["rows"]),
     }
 
-    for sig in SIGNALS:
+    for sig in WORKBOOKS:
         wb = pkg.workbook(f"{sig}.xlsx")
         s_sum = read_sheet(wb["Summary"])
         entry = {
@@ -147,7 +153,7 @@ def extract(pkg: Package) -> dict:
             if not r.get("evidence_id"):
                 continue
             r = {k: v for k, v in r.items() if v is not None}
-            r["signal_id"] = sig
+            r.setdefault("signal_id", sig)
             data["evidence"].append(r)
 
         for r in read_sheet(wb["Evidence detail"])["rows"]:
@@ -166,7 +172,7 @@ def extract(pkg: Package) -> dict:
     for key, rel in [("saved_checks", "SAVED_XLSX_CHECKS.json"), ("portable", "PORTABLE_VERIFICATION.json")]:
         try:
             data[key] = json.loads(pkg.read(rel))
-        except KeyError:
+        except (KeyError, FileNotFoundError):  # not every package version ships these
             data[key] = None
 
     data["client_display"] = CLIENT_DISPLAY
@@ -174,6 +180,7 @@ def extract(pkg: Package) -> dict:
         "package": pkg.name,
         "generated_at": dt.datetime.now().astimezone().isoformat(timespec="seconds"),
         "evidence_rows": len(data["evidence"]),
+        "rule_version": "development-2",
         "core_assessment": "2026-11-03",
         "crr_assessment": "2026-11-04",
         "export_date": "2026-11-05",
@@ -196,7 +203,7 @@ def check(data: dict) -> None:
 
 
 def logo_data_uri(pkg: Package) -> str:
-    html = pkg.read("sample board/dashboard.html").decode("utf-8")
+    html = pkg.read("sample board/dashboard.html").decode("utf-8")  # the LAF sample board
     m = re.search(r'class="logo-mark"\s+src="(data:image/png;base64,[A-Za-z0-9+/=]+)"', html)
     if not m:
         raise SystemExit("HSBC logo not found in sample board/dashboard.html")
@@ -205,8 +212,10 @@ def logo_data_uri(pkg: Package) -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--src", default="signal_workbooks_20261105_003.zip",
-                    help="signal workbook package: the .zip or an extracted folder")
+    ap.add_argument("--src", default="signal_workbooks_20261105_004",
+                    help="signal workbook package: a folder or a .zip")
+    ap.add_argument("--logo-from", default="signal_workbooks_20261105_003.zip",
+                    help="package containing 'sample board/dashboard.html' (the LAF board)")
     ap.add_argument("--out", default=str(HERE / "dcm_signals_dashboard.html"))
     ap.add_argument("--json", help="optionally also write the extracted payload as JSON")
     args = ap.parse_args()
@@ -218,7 +227,7 @@ def main() -> None:
     payload = json.dumps(data, ensure_ascii=False, separators=(",", ":"), default=str)
     payload = payload.replace("</", "<\\/")  # never terminate the <script> early
     template = (HERE / "template.html").read_text(encoding="utf-8")
-    html = template.replace("__LOGO_DATA_URI__", logo_data_uri(pkg)).replace("__DASHBOARD_DATA__", payload)
+    html = template.replace("__LOGO_DATA_URI__", logo_data_uri(Package(Path(args.logo_from)))).replace("__DASHBOARD_DATA__", payload)
     Path(args.out).write_text(html, encoding="utf-8")
     if args.json:
         Path(args.json).write_text(json.dumps(data, ensure_ascii=False, indent=1, default=str), encoding="utf-8")

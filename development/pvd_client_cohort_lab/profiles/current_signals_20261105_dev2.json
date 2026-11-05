@@ -1,0 +1,172 @@
+{
+  "rule_version": "development-2-current-20261105",
+  "csv_delimiter": ",",
+  "freshness_days": 30,
+  "counterparty": {
+    "catalog_confirmed": false,
+    "settings_verified": false,
+    "as_of_policy": "point_in_time",
+    "lookback_days": 120,
+    "active_statuses": [
+      "A",
+      "ACTIVE",
+      "Y"
+    ],
+    "allow_blank_status": true,
+    "invalid_mastergroups": [
+      "NO MSG",
+      "XNA",
+      "N/A"
+    ]
+  },
+  "identity": {
+    "cin_namespace_verified": false
+  },
+  "sig01": {
+    "definitions_verified": false,
+    "definition_source": "DCM meeting (Jerome): any drawing by a client on any Cat A bank facility (RCF, term loan, bilateral) above EUR 50m is material; consider HSBC share and inferred total drawing.",
+    "missing_drawn_as_zero": true,
+    "products": [
+      "REV",
+      "TERM"
+    ],
+    "drawn_field": "facility_drawn_amount",
+    "currency_field": "facility_currency",
+    "alternative_drawn_fields": [
+      {
+        "field": "ag_acc_bal_drawn_sub_lim_usd",
+        "currency": "USD",
+        "component": "drawing_change_alt_usd",
+        "note": "Separate comparison on the only populated CLO drawn field. Never mixed with facility_drawn_amount; unit/meaning to be validated."
+      }
+    ],
+    "eligible_limit_categories": [
+      "CAT-A"
+    ],
+    "require_eligible_limit_category": true,
+    "limit_category_lookup": {
+      "source": "facilities",
+      "clo_key_fields": [
+        "sub_lim_id",
+        "facility_id"
+      ],
+      "facility_field": "facility_id",
+      "category_field": "limit_cat"
+    },
+    "materiality": {
+      "basis": "drawing_increase",
+      "threshold_amount": 50000000,
+      "threshold_currency": "EUR",
+      "fx_to_threshold_currency": {},
+      "fx_note": "No FX rates are supplied. Add agreed rates (units of EUR per 1 unit of currency) with their date; no fallback conversion is applied.",
+      "participation_share_field": null,
+      "sole_lender_field": "deal_indicator_sole_lender"
+    },
+    "maximum_comparison_gap_days": null
+  },
+  "utilisation": {
+    "threshold_percent": 70,
+    "clo": {
+      "definitions_verified": false,
+      "drawn_field": "facility_drawn_amount",
+      "limit_field": "facility_limit_amount",
+      "currency_field": "facility_currency"
+    },
+    "drr": {
+      "definitions_verified": false,
+      "drawn_field": "utilisation",
+      "limit_field": "approved_limit",
+      "drawn_currency_field": "utilisation_ccy",
+      "limit_currency_field": "approved_limit_ccy"
+    },
+    "pvd": {
+      "definitions_verified": false,
+      "drawn_field": "drr_utils",
+      "limit_field": "drr_act_limit",
+      "verified_currency": null,
+      "grain_verified": false
+    },
+    "context_only": true,
+    "note": "Utilisation is context (CTX_UTIL). It is not covenant pressure."
+  },
+  "sig02": {
+    "definitions_verified": false,
+    "definition_source": "DCM meeting: use the internal credit approval date (earlier than signing) for new RCF / term loan / bridge facilities.",
+    "qualifying_product_codes": [],
+    "event_fields": [
+      {
+        "field": "loan_approva_dt",
+        "basis": "credit_approval_date"
+      },
+      {
+        "field": "facility_creation_date",
+        "basis": "facility_creation_date_candidate_approval"
+      }
+    ],
+    "event_lookback_days": 90
+  },
+  "sig04": {
+    "definitions_verified": false,
+    "review_purpose_codes": [
+      "NTB",
+      "TRG"
+    ],
+    "event_field": "review_request_created_time_stamp",
+    "event_lookback_days": 90
+  },
+  "covenants": {
+    "definitions_verified": false,
+    "financial_types": [
+      "FINANCIAL"
+    ],
+    "approved_statuses": [],
+    "approval_field": "active_testing_approval_status",
+    "value_field": "active_testing_final_value",
+    "event_field": "reporting_dt",
+    "event_lookback_days": 90,
+    "pressure_headroom_turns": 0.5,
+    "definition_source": "DCM meeting (Jerome): covenant pressure when leverage (e.g. net debt / EBITDA) is within half a turn of the covenant maximum, e.g. >= 2.5x against 3.0x.",
+    "required_fields_note": "Needs genuine financial covenant tests: covenant metric (net debt/EBITDA), actual/final value, maximum threshold, operator, test date and approval state."
+  },
+  "sig03": {
+    "SIG03A": {
+      "name": "Swap roll on maturing debt",
+      "source": null,
+      "required_fields": [
+        "client identifiers",
+        "trade id",
+        "product (IRS/CCS/FX swap)",
+        "trade and maturity dates",
+        "notional and currency",
+        "linked debt reference",
+        "roll/novation indicator"
+      ]
+    },
+    "SIG03B": {
+      "name": "New pre-hedge swap enquiry",
+      "source": null,
+      "candidate_sources": [
+        "Bloomberg chat (open question)",
+        "sales pricing-request logs"
+      ],
+      "required_fields": [
+        "client identifiers",
+        "enquiry id and date",
+        "product (FX swap, IRS, CCS)",
+        "status",
+        "notional and currency",
+        "stated financing purpose"
+      ]
+    }
+  },
+  "sig07": {
+    "source": "CME call reports (GRB / senior banker call notes)",
+    "integrated": false,
+    "reason": "Rating advisory requests are rare and are recorded only in call reports; CME integration is blocked on MNPI handling and entitlements (same dependency as SIG05)."
+  },
+  "dropped_signals": {
+    "investor_sales_count": "Dropped by DCM: weak signal because HSBC initiates the investor interaction."
+  },
+  "current_snapshot_only": true,
+  "profile_note": "Supersedes current_signals_20261103.json (development-1, retained for history). Same scope and assessment dates; rules follow the DCM meeting decisions."
+}

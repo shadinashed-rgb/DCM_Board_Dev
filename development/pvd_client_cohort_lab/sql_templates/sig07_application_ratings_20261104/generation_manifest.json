@@ -1,0 +1,9 @@
+{
+  "source_table": "\"delta\".\"prod_credit_and_lending_gda\".\"application_ratings\"",
+  "signal": "SIG07",
+  "as_of": "2026-11-04",
+  "source_cohort": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/analysis/dcm_run_003_review_20261103/local_test/cohort",
+  "identifier_candidates": 365,
+  "stage": "metadata_and_samples_pending",
+  "scope": "Three client discovery; no source namespace, current-rating selection or advisory trigger approved"
+}

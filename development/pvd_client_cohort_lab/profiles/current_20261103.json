@@ -1,0 +1,40 @@
+{
+  "cohort_name": "Current three-client extraction, 3 November 2026",
+  "membership_policy": "Reviewed discovery cohort; historical membership is not inferred",
+  "groups": [
+    {
+      "mastergroup_id": "MG001356",
+      "name": "VODAFONE",
+      "aliases": [
+        "VODAFONE"
+      ]
+    },
+    {
+      "mastergroup_id": "MG102229",
+      "name": "Siemens Energy",
+      "aliases": [
+        "SIEMENS ENERGY"
+      ]
+    },
+    {
+      "mastergroup_id": "MG101624",
+      "name": "SOFTBANK",
+      "aliases": [
+        "SOFTBANK",
+        "SOFT BANK"
+      ]
+    }
+  ],
+  "freshness_days": 30,
+  "csv_delimiter": ",",
+  "invalid_identifiers": [
+    "XNA",
+    "NO SPG",
+    "NO MSG",
+    "N/A",
+    "0"
+  ],
+  "counterparty_catalog_confirmed": true,
+  "counterparty_lookback_days": 120,
+  "source_windows": {}
+}

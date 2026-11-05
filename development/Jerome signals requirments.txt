@@ -1,0 +1,135 @@
+Jerom
+
+Based on the meeting transcript, Jerome suggested the following internal signals that could help DCM teams anticipate potential bond issuances:
+1. Anything linked to existing RCF (Revolving Credit Facility), or the signing of a new RCF, term loan, or bridge facility, as there is a high chance it will be refinanced in the bond market at some point.
+2. Anything linked to derivatives, such as when an issuer calls HSBC for pricing related to a pre-hedge or any swap.
+3. Anything from the back office linked to onboarding a new entity or a refresh of KYC of signatories, which may signal an upcoming bond transaction.
+4. Anything found in call reports posted by GRBs in CME containing keywords such as acquisition, drawing, or opportunistic, as these could be perceived as signals for bond originators.
+5. Anything linked to a covenant breach or covenant pressure, which could indicate a potential hybrid transaction in the foreseeable future.
+Jerome also noted that he was unsure how to link this internal data to the AI model and how it would then be exported or sent to the originators.
+
+From <https://zoom.localhost/index-5.1.11504.html#/aic> 
+
+
+Jerome explained the threshold requirements for RCF drawings as follows:
+There are two thresholds to consider. The first is HSBC's own share of the drawing on the RCF, and the second is the total inferred or assumed drawing on the entire RCF. For example, if HSBC holds 10% of an RCF and their participation is drawn at 10 million euros, that means the total RCF drawing is 100 million euros.
+Jerome stated that anything below 50 million euros in total drawing is considered insignificant for investment-grade corporates. So a minimum threshold of 50 million euros total drawing would be the baseline for flagging a relevant signal for DCM purposes.
+Jerome also emphasized the importance of having a minimum threshold to filter out noise, giving an example that if a local subsidiary in India draws on a local facility for only 5 or 10 million euros, that would be irrelevant for DCM and should not trigger an alert.
+
+From <https://zoom.localhost/index-5.1.11504.html#/aic> 
+
+Internal data requirment:
+Based on the meeting context, Simonti summarized the data requirements that she needed from Roxana. These were related to Jerome's list of internal signals, specifically in the credit domain:
+Material increase in RCF drawings - identifying which source contains this data and what constitutes "material"
+Signing of new term loan and bridge facility - identifying the relevant data sources
+Covenant pressure - identifying where this data resides
+Ratings advisory - identifying the relevant source
+KYC related signals - identifying the data source
+CME related signals - identifying the data source
+Simonti specifically noted to Roxana that the main help needed was to identify which country the data comes from, which source contains it, and how to surface it to the AI Markets platform. Roxana confirmed before leaving the meeting that they do have the data available and that the team just needs to explore it.
+
+From <https://zoom.localhost/index-5.1.11504.html#/aic> 
+
+Summary
+
+Here is a detailed summary of the meeting:
+Meeting Title: AI DCM / Use Case 6 - Market Signals
+Participants: Pankaj Pathak, Jerome Pierre Zecchini, Simonti Basu, Roksana Martirosjana, and Shadi Nashed.
+Purpose of the Meeting:
+The main goal was to discuss Use Case 6, which focuses on identifying and anticipating potential bond issuances through market signals, both internal and external, using AI tools. The meeting also briefly touched on a separate use case related to investor strategy and order book analysis.
+Key Discussion Points:
+Context and Background:
+Simonti explained that the LAF team currently casts a wide net by monitoring market news, filings, and sponsor activity, mainly through teams in India. The process involves manual entity resolution to match alerts with HSBC client lists, followed by finding internal context such as RCF details and credit facilities. The goal is to automate this process using an AI agent that can match external activity with internal HSBC data, enrich it with RCF information, flag upcoming debt maturity windows, and present it in a dashboard format.
+Internal Signals Identified by Jerome:
+Jerome outlined several internal signals that would be relevant for DCM originators. These include material increases in RCF drawings, signing of new RCFs, term loans, or bridge facilities, derivative-related activity such as pre-hedge pricing or swap inquiries, onboarding of new entities or KYC refresh of signatories, keywords in CME call reports such as acquisition, drawing, opportunistic, and liquidity, and covenant breaches or covenant pressure which could signal upcoming hybrid transactions.
+RCF Drawing Thresholds:
+Jerome clarified that two thresholds should be considered, which are HSBC's own share of the RCF drawing and the inferred total drawing on the RCF. He suggested that anything below 50 million euros in total drawing would be insignificant for investment-grade corporates. He also noted that drawings at any entity level, whether parent or subsidiary, are relevant, as they could trigger various types of bond issuances depending on the geography.
+Dashboard vs. Triggers:
+The group agreed that a
+
+From <https://zoom.localhost/index-5.1.11504.html#/aic> 
+
+Here is a summary of the meeting:
+The meeting was about Use Case 6: Market Signals for the DCM (Debt Capital Markets) team. The key participants were Jerome (senior DCM stakeholder), Simonti, Pankaj, and Roxana (from the CCM credit team).
+The main discussion points were:
+Context on LAF (Leveraged Acquisition Finance) pilot: Simonti explained that there is an ongoing pilot where an AI agent is being built to match external market signals (M&A activity, news filings, sponsor activity) with internal HSBC data like RCF information and debt maturity windows. The goal is to automate what is currently a very manual process.
+Internal signals for DCM: Jerome outlined the key internal signals that would be useful for DCM originators, including material increases in RCF drawings, signing of new term loans or bridge facilities, derivative activity, KYC onboarding updates, call reports from CME containing keywords like acquisition or drawing, and covenant pressure.
+Dashboard vs triggers: The group agreed that a dashboard format (similar to what you, Shadi, are building for LAF) would be preferred over email triggers, to avoid information overload.
+Data latency: Jerome expressed a preference for daily data updates rather than weekly, as timely information is critical for competitive advantage.
+Data sources: LoanIQ was identified as the source for RCF data. CME integration is more complex due to MNPI concerns and entitlement challenges.
+You, Shadi, demonstrated the LAF dashboard prototype, showing how RCF data and Refinitiv news articles are being pulled together for client monitoring.
+Next steps: A follow-up call was agreed for August 31st, with Tim and Rachel to be included. The team will work on identifying internal data sources, particularly from the credit domain, and explore external sources in parallel.
+
+
+
+Simonti
+Based on the meeting discussion, here is how the Bond Radar use case is proposed to be built:
+Objective:
+The goal is to build an ML model that can proactively predict which clients are likely to issue a bond, rather than just providing signals for banker productivity. The end output would be a list of priority clients most likely to come up with a bond issuance, acting as a sales effectiveness tool for DCM bankers.
+Step 1 - Get Historical Deal Data:
+Obtain a list of all clients for whom HSBC won mandates in 2025 from DCM (Ayush was mentioned as the contact). Also use external sources like DeLogic to get bond issuances where HSBC did not win the mandate, to broaden the training dataset.
+Step 2 - Identify Credit Data Patterns:
+Go back to those clients and look at their credit data in the months leading up to their bond issuance. Focus on signals such as liquidity pressure, covenant pressure, KYC data, and CLO counterparty data. The key question is whether there are consistent patterns in credit data before a bond issuance occurs.
+Step 3 - Data Sources:
+Use data already available on the CIP data platform (HDP46), including CALM data, counterparty data, KYC data, and CLO data. Bloomberg is not needed as it is for real-time data. DeLogic can be used for historical public bond issuance data.
+Step 4 - Build and Train the ML Model:
+Similar to the approach Alberto used for the ALM/LAF piece, train an ML model using the historical data of clients where deals were already won. Then apply the model to the current priority client list to predict who is likely to issue a bond.
+Step 5 - Output:
+The model should output a prioritized list of clients predicted to issue bonds, which DCM bankers can use proactively to target clients.
+Next Steps for Shadi:
+When back from leave, focus on this bond radar use case. Review the signals Jerome sent (mainly credit and KYC data), and start exploring the data availability on HDP46 for this approach.
+
+From <https://zoom.localhost/index-5.1.11775.html#/aic> 
+Email related:
+
+FW: Column Labels for info send to Dealogic Simonti
+
+
+New requirments :
+Based on the meeting discussion, your tasks regarding the Bond Trader (DCM use case) are as follows:
+1. Put all the relevant information and data together to form a clear picture of the use case. You mentioned you need to gather data from different sources, as this use case involves multiple data sources combined.
+2. Simonti suggested two potential approaches you should explore:
+The first approach is similar to the LAF approach, where you create and make the data available to the bankers in a straightforward manner, such as creating a DCM prospecting board with all the data DCM requires.
+The second approach is more analytical, where you explore whether internal historical data can be used to build a prediction model (ML model) for bond issuance. This would involve looking at historical bond issuances done at HSBC, examining the data leading up to those issuances, and determining whether indicators such as a client's credit situation at that time could predict future bond issuances.
+3. Over the next 3 to 4 weeks, you are expected to explore both approaches and determine which one is the most suitable to pursue.
+4. You will provide updates to the team once you have a clearer direction.
+Since this use case is required for next year, there is some time to explore and decide on the best approach before committing to one direction.
+
+From <https://zoom.localhost/index-5.1.11818.html#/aic> 
+
+
+
+Detailed process:
+
+Here is a detailed explanation of the tasks Simonti outlined for you, Shadi:
+5. Identify Won Mandates
+Start by identifying which mandates HSBC has won, for example in 2025. Look at the clients for those deals and find out what their credit situation was in the months leading up to winning the mandate.
+6. Match Signals to Deals
+Cross-reference the credit situation of those clients with the internal signals Jerome has provided (RCF, pre-hedge, covenant pressure, KYC). The goal is to see if those signals show any patterns before a deal was won.
+7. Use Time Series Data
+Do not just look at the current credit information. You need historical, time series data showing what the credit profile looked like in the months or even years before the deal. Simonti suggested looking at up to a year, or even 5 years as GRA models do.
+8. Access Data via GRADE Platform
+The time series credit data is stored on a platform called GRADE (G-R-A-D-E). This is not the main platform but a separate risk data platform. The contact person to access this data is Luke Reader, who represents the GRA team, a risk modeling team that works with credit models.
+9. Talk to Sergey First
+Before going to Luke, Simonti recommended speaking with Sergey first. He has a similar angle, looking at whether clients are likely to take out loan or term loan products. He used to work in GRA, so he can give useful guidance on the data and approach, even though his focus is on different products, not DCM specifically.
+10. Overall Goal
+The broader objective is to find out whether existing client data can predict if a client is likely to go for a bond issuance, before they even approach HSBC. This is the predictive or ML-oriented direction Simonti mentioned.
+11. Next Steps
+Simonti suggested setting up a longer dedicated meeting with you to go through the data together once you have extracted and organized it from the different sources. She also confirmed she would resend the completed deals file from the last two years.
+
+From <https://zoom.localhost/index-5.1.11818.html#/aic> 
+
+More detail for same tasks:
+Here is a detailed summary of your tasks discussed in the meeting, Shadi:
+12. DCM Use Case - Data Extraction
+You are working on extracting sample data for the DCM (Debt Capital Markets) use case. You identified 4 internal signals to work with: RCF, pre-hedge, covenant pressure, and KYC. You are compiling these signals along with notes from Jerome.
+13. Analyzing Won Mandates
+Simonti directed you to identify which mandates HSBC won (suggested looking at the last 2 years). You need to look at the credit situation of those clients in the months leading up to winning the mandate, and check if that matches the signals Jerome provided. Simonti confirmed she resent you the completed deals file.
+14. Time Series Data
+The key focus is not just current credit data, but historical time series data leading up to each deal. Simonti suggested looking at up to a year (or even 5 years, as GRA does) before the deal date. This data is stored on a platform called GRADE, which holds time series credit data for clients.
+15. People to Contact
+Sergey: A good starting point to understand how similar signals and time series data have been used for predicting other product deals (e.g., term loans). He has a GRA background and can help shape your approach.
+Luke Reader (GRA team): The contact for accessing the actual time series data from GRADE. However, Simonti suggested first clarifying what data you need before approaching him.
+16. Next Steps
+Go through the deals file Simonti resent you. Extract data from different sources and organize it clearly. Start with a conversation with Sergey to understand the existing work and methodology. Then set up a meeting with Simonti to go through the data together before approaching Luke for GRADE data access. Simonti also suggested scheduling a longer dedicated session with you to go through the data step by step.
+Your overall approach of picking specific client examples to build and test the signals before defining the full process was acknowledged, though Simonti emphasized the importance of the time series dimension throughout.

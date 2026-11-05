@@ -1,0 +1,11 @@
+{
+  "source": "pvd",
+  "query_file": "02_pvd_discovery.sql",
+  "start": "2026-10-01",
+  "end": "2026-10-30",
+  "filters": "seed ID equality and candidate name aliases",
+  "extracted_at_utc": "FILL",
+  "execution_status": "FILL",
+  "export_row_limit": "FILL",
+  "coverage": "Discovery candidates; not a complete group entity roster."
+}

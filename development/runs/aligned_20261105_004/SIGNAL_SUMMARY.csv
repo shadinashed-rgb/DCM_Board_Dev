@@ -1,0 +1,31 @@
+﻿signal_id,signal_name,kind,client,mastergroup_id,evidence_rows,needs_validation,unavailable,material_drawing_test,recent_approval_test,covenant_pressure_test,utilisation_above_70_context,populated_crr,coverage_status
+SIG01,Material drawing on a Cat A bank facility,signal,VODAFONE,MG001356,4,4,0,0,0,0,0,0,partial_development_evidence
+SIG01,Material drawing on a Cat A bank facility,signal,Siemens Energy,MG102229,2,2,0,0,0,0,0,0,partial_development_evidence
+SIG01,Material drawing on a Cat A bank facility,signal,SOFTBANK,MG101624,2,0,2,0,0,0,0,0,partial_development_evidence
+SIG02,"New RCF, term loan or bridge (credit approval date)",signal,VODAFONE,MG001356,46,42,4,0,7,0,0,0,partial_development_evidence
+SIG02,"New RCF, term loan or bridge (credit approval date)",signal,Siemens Energy,MG102229,15,6,9,0,1,0,0,0,partial_development_evidence
+SIG02,"New RCF, term loan or bridge (credit approval date)",signal,SOFTBANK,MG101624,2,2,0,0,1,0,0,0,partial_development_evidence
+SIG03A,Swap roll on maturing debt,signal,VODAFONE,MG001356,0,0,0,0,0,0,0,0,source_missing
+SIG03A,Swap roll on maturing debt,signal,Siemens Energy,MG102229,0,0,0,0,0,0,0,0,source_missing
+SIG03A,Swap roll on maturing debt,signal,SOFTBANK,MG101624,0,0,0,0,0,0,0,0,source_missing
+SIG03B,New pre-hedge swap enquiry,signal,VODAFONE,MG001356,0,0,0,0,0,0,0,0,source_missing
+SIG03B,New pre-hedge swap enquiry,signal,Siemens Energy,MG102229,0,0,0,0,0,0,0,0,source_missing
+SIG03B,New pre-hedge swap enquiry,signal,SOFTBANK,MG101624,0,0,0,0,0,0,0,0,source_missing
+SIG04,KYC onboarding / signatory refresh,signal,VODAFONE,MG001356,0,0,0,0,0,0,0,0,empty_export
+SIG04,KYC onboarding / signatory refresh,signal,Siemens Energy,MG102229,0,0,0,0,0,0,0,0,empty_export
+SIG04,KYC onboarding / signatory refresh,signal,SOFTBANK,MG101624,0,0,0,0,0,0,0,0,empty_export
+SIG05,CME call report keywords,excluded,VODAFONE,MG001356,0,0,0,0,0,0,0,0,excluded
+SIG05,CME call report keywords,excluded,Siemens Energy,MG102229,0,0,0,0,0,0,0,0,excluded
+SIG05,CME call report keywords,excluded,SOFTBANK,MG101624,0,0,0,0,0,0,0,0,excluded
+SIG06,Financial covenant breach or pressure,signal,VODAFONE,MG001356,0,0,0,0,0,0,0,0,source_missing
+SIG06,Financial covenant breach or pressure,signal,Siemens Energy,MG102229,0,0,0,0,0,0,0,0,source_missing
+SIG06,Financial covenant breach or pressure,signal,SOFTBANK,MG101624,0,0,0,0,0,0,0,0,source_missing
+SIG07,Rating advisory request (call reports),signal,VODAFONE,MG001356,0,0,0,0,0,0,0,0,source_not_integrated
+SIG07,Rating advisory request (call reports),signal,Siemens Energy,MG102229,0,0,0,0,0,0,0,0,source_not_integrated
+SIG07,Rating advisory request (call reports),signal,SOFTBANK,MG101624,0,0,0,0,0,0,0,0,source_not_integrated
+CTX_UTIL,Facility utilisation (context),context,VODAFONE,MG001356,109,20,89,0,0,0,1,0,partial_development_evidence
+CTX_UTIL,Facility utilisation (context),context,Siemens Energy,MG102229,293,32,261,0,0,0,2,0,partial_development_evidence
+CTX_UTIL,Facility utilisation (context),context,SOFTBANK,MG101624,40,5,35,0,0,0,2,0,partial_development_evidence
+CTX_CREDIT,Credit category and rating (context),context,VODAFONE,MG001356,68,67,1,0,0,0,0,7,partial_development_evidence
+CTX_CREDIT,Credit category and rating (context),context,Siemens Energy,MG102229,38,35,3,0,0,0,0,9,partial_development_evidence
+CTX_CREDIT,Credit category and rating (context),context,SOFTBANK,MG101624,12,12,0,0,0,0,0,2,partial_development_evidence

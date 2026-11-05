@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en" data-hsbc-theme>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#db0011">
+<title>Bond Radar signal and source flowchart</title>
+<style>
+:root{color-scheme:light dark;--bg:#f5f6f8;--surface:#fff;--text:#172330;--muted:#566475;--line:#d7dee7;--accent:#2257b8;--soft:#edf3ff;--edge:#8d9bab;--pending:#8b5b15;--pending-bg:#fff6e6;--shadow:0 8px 26px #1323370a}
+@media(prefers-color-scheme:dark){:root{--bg:#12171e;--surface:#1b232d;--text:#edf2f8;--muted:#b2bfcd;--line:#3b4858;--accent:#99bcff;--soft:#243751;--edge:#8495aa;--pending:#f0c689;--pending-bg:#3c3020;--shadow:none}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:4px}button:disabled{opacity:.4;cursor:default}a{color:var(--accent)}.page{max-width:1600px;margin:auto;padding:32px}.eyebrow{font-size:12px;letter-spacing:.13em;font-weight:700;text-transform:uppercase;color:var(--muted)}h1{font-size:clamp(25px,3vw,36px);letter-spacing:-.035em;line-height:1.18;margin:9px 0 12px}h2{font-size:22px;line-height:1.25;letter-spacing:-.02em;margin:10px 0}h3{font-size:15px;margin:18px 0 7px}.intro{max-width:920px;margin:0;color:var(--muted)}.meta{margin:16px 0 24px;display:flex;gap:12px 24px;flex-wrap:wrap;font-size:13px;color:var(--muted)}.layout{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:24px;align-items:start}.diagram-panel,.detail{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);min-width:0}.panel-top{padding:18px 20px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.panel-label{font-size:14px;font-weight:650}.panel-hint{font-size:12px;color:var(--muted);margin-top:2px}.toolbar{display:flex;gap:6px;align-items:center}.tool{min-width:38px;height:38px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}.tool:hover{background:var(--soft)}.zoom-label{min-width:48px;text-align:center;font-size:12px;font-variant-numeric:tabular-nums}.viewport{height:690px;overflow:hidden;position:relative;touch-action:none;cursor:grab;background-image:radial-gradient(var(--line) .65px,transparent .65px);background-size:20px 20px;border-radius:0 0 16px 16px}.viewport.dragging{cursor:grabbing}.viewport{user-select:none}.world{position:absolute;left:0;top:0;width:840px;height:900px;transform-origin:0 0}.connections{position:absolute;inset:0;width:840px;height:900px;overflow:visible;pointer-events:none}.edge{fill:none;stroke:var(--edge);stroke-width:1.6;transition:opacity .18s,stroke .18s}.edge.active{stroke:var(--accent);stroke-width:2.6}.edge.discovery{stroke-dasharray:6 5}.edge.dim{opacity:.32}.column-title{position:absolute;top:26px;color:var(--muted);font-size:14px;font-weight:600}.node{position:absolute;width:240px;min-height:74px;border:1px solid var(--line);border-radius:12px;padding:12px 16px;text-align:left;background:var(--surface);box-shadow:0 2px 7px #13233708;line-height:1.3;transition:border-color .15s,background .15s}.node:hover{background:var(--soft)}.node.selected{background:var(--soft);border:2px solid var(--accent);padding:11px 15px}.node.connected{border-color:var(--accent)}.node.pending{border-style:dashed}.node-kicker{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}.node-name{display:block;font-size:16px;font-weight:650}.node-note{display:block;color:var(--muted);font-size:12px;margin-top:5px}.node.pending .node-kicker{color:var(--pending)}.detail{padding:24px;max-height:830px;overflow:auto;scrollbar-width:thin}.detail-label{color:var(--accent);font-size:12px;text-transform:uppercase;letter-spacing:.1em;font-weight:700}.description{color:var(--muted);margin:8px 0 18px}.sources{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 20px}.source-chip{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:6px 9px;font-size:12px;text-align:left}.source-chip:hover{background:var(--soft)}.discovery-note{background:var(--pending-bg);color:var(--pending);padding:10px 12px;border-radius:8px;font-size:13px;margin:14px 0}.detail p{margin:8px 0 14px}.detail code{font-size:12px;overflow-wrap:anywhere;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--soft);border-radius:4px;padding:1px 4px}.detail .table-name{display:block;background:none;padding:0;color:var(--muted);margin:12px 0 20px}.detail strong{font-weight:650}.detail details{border-top:1px solid var(--line);padding:13px 0}.detail summary{font-weight:650;cursor:pointer;line-height:1.45}.detail details>div{padding-top:3px}.detail ul{padding-left:19px;margin:8px 0 14px}.detail li{margin:6px 0}.detail .step{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:650;margin-top:19px}.flow-footer{margin-top:24px;display:grid;grid-template-columns:1fr 24px 1fr 24px 1fr;align-items:center;gap:12px}.stage{padding:16px 0;border-top:2px solid var(--line)}.stage strong{display:block;font-size:14px}.stage span{display:block;font-size:13px;color:var(--muted);margin-top:4px}.arrow{color:var(--muted);text-align:center}.footnote{color:var(--muted);font-size:12px;margin:20px 0 0}.mobile-map{display:none}.mobile-row{padding:16px;border-bottom:1px solid var(--line)}.mobile-row:last-child{border-bottom:0}.mobile-sources{display:flex;flex-wrap:wrap;gap:6px}.mobile-arrow{font-size:13px;color:var(--muted);margin:8px 0}.mobile-signal{display:block;width:100%;padding:12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);text-align:left}.mobile-signal[aria-pressed=true]{background:var(--soft);border-color:var(--accent)}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+@media(min-width:1500px){.viewport{height:780px}.detail{max-height:920px}}
+@media(max-width:1150px){.page{padding:24px}.layout{grid-template-columns:minmax(0,1fr) 340px;gap:16px}.detail{padding:20px}.viewport{height:660px}}
+@media(max-width:1050px){.layout{grid-template-columns:1fr}.detail{max-height:none;overflow:visible}.viewport{height:690px}.page{padding:20px}.detail{scroll-margin-top:16px}}
+@media(max-width:550px){.page{padding:18px 12px}.meta{gap:6px 16px}.viewport,.toolbar,.desktop-hint{display:none}.mobile-map{display:block}.panel-top{padding:15px}.flow-footer{grid-template-columns:1fr;gap:0}.arrow{display:none}.stage{margin-top:10px}.detail{padding:20px}.intro{font-size:14px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+@media print{body{background:#fff;color:#172330}.page{padding:0}.layout{display:block}.toolbar,.viewport,.mobile-map,.detail,.footnote{display:none}.print-summary{display:block!important}.print-summary table{border-collapse:collapse;width:100%;font-size:10px}.print-summary td,.print-summary th{border:1px solid #ccc;text-align:left;vertical-align:top;padding:6px;overflow-wrap:anywhere}.flow-footer{display:none}h1{font-size:24px}}
+</style>
+<style id="hsbc-house-theme">
+/* HSBC house theme from the user-provided hsbc-house-style.md.
+   Token and component styling only. No application logic or data semantics. */
+:root {
+  --hsbc-red: #db0011;
+  --hsbc-red-dark: #b1000e;
+  --hsbc-black: #000;
+  --hsbc-charcoal: #333;
+  --hsbc-slate: #5c5c5c;
+  --hsbc-border: #d7d7d7;
+  --hsbc-border-strong: #b8b8b8;
+  --hsbc-bg: #f3f3f3;
+  --hsbc-card: #fff;
+  --hsbc-soft: #f8f8f8;
+  --pill-red-bg: #fde7ea;
+  --pill-red-tx: #8f0010;
+  --pill-amber-bg: #fff2db;
+  --pill-amber-tx: #7a5500;
+  --pill-green-bg: #e7f5ec;
+  --pill-green-tx: #1c5c35;
+  --pill-grey-bg: #efefef;
+  --pill-grey-tx: #666;
+  --hsbc-shadow: 0 8px 24px rgba(0, 0, 0, .06);
+  --hsbc-radius: 14px;
+  --hsbc-font: "Univers Next for HSBC", Arial, sans-serif;
+}
+[data-hsbc-theme] {
+  color-scheme: light;
+  color: var(--hsbc-black);
+  font-family: var(--hsbc-font);
+  -webkit-font-smoothing: antialiased;
+}
+[data-hsbc-theme] .hsbc-topbar {
+  background: var(--hsbc-card);
+  border: 1px solid var(--hsbc-border);
+  border-top: 6px solid var(--hsbc-red);
+  border-radius: var(--hsbc-radius);
+  box-shadow: var(--hsbc-shadow);
+  padding: 20px 24px;
+}
+[data-hsbc-theme] .hsbc-kicker {
+  color: var(--hsbc-red);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+[data-hsbc-theme] .hsbc-button {
+  background: var(--hsbc-card);
+  border: 1px solid var(--hsbc-red);
+  border-radius: 999px;
+  color: var(--hsbc-red);
+  cursor: pointer;
+  font-family: var(--hsbc-font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+[data-hsbc-theme] .hsbc-button:hover {
+  background: var(--hsbc-soft);
+  border-color: var(--hsbc-red-dark);
+  color: var(--hsbc-red-dark);
+}
+[data-hsbc-theme] .hsbc-button-primary {
+  background: var(--hsbc-red);
+  color: var(--hsbc-card);
+}
+[data-hsbc-theme] .hsbc-button-primary:hover {
+  background: var(--hsbc-red-dark);
+  color: var(--hsbc-card);
+}
+[data-hsbc-theme] .hsbc-button:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+[data-hsbc-theme] :is(button, a, summary, input, select):focus-visible {
+  outline: 3px solid var(--hsbc-red);
+  outline-offset: 3px;
+}
+[data-hsbc-theme] .hsbc-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+[data-hsbc-theme] .hsbc-table :is(th, td) {
+  border: 1px solid var(--hsbc-border);
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+[data-hsbc-theme] .hsbc-table th {
+  background: #111;
+  color: var(--hsbc-card);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+[data-hsbc-theme] .hsbc-table tbody tr:nth-child(even) {
+  background: var(--hsbc-soft);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-hsbc-theme] *, [data-hsbc-theme] *::before, [data-hsbc-theme] *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* Existing flowchart selectors mapped to the swappable HSBC theme. */
+:root {
+  color-scheme: light;
+  --bg: var(--hsbc-bg);
+  --surface: var(--hsbc-card);
+  --text: var(--hsbc-black);
+  --muted: var(--hsbc-slate);
+  --line: var(--hsbc-border);
+  --accent: var(--hsbc-red);
+  --soft: var(--hsbc-soft);
+  --edge: var(--hsbc-border-strong);
+  --pending: var(--pill-amber-tx);
+  --pending-bg: var(--pill-amber-bg);
+  --shadow: var(--hsbc-shadow);
+}
+body {
+  background: var(--hsbc-bg);
+  color: var(--hsbc-black);
+  font: 14px/1.5 var(--hsbc-font);
+  -webkit-font-smoothing: antialiased;
+}
+.page {padding: 24px;}
+.page > header {margin-bottom: 20px;}
+.eyebrow {
+  color: var(--hsbc-red);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+h1 {font-size: 18px; font-weight: 700; line-height: 1.35; letter-spacing: normal; margin: 8px 0 10px;}
+h2 {font-size: 18px; font-weight: 700; letter-spacing: normal;}
+h3, strong, .panel-label, .node-name, .detail strong, .detail summary, .stage strong {font-weight: 700;}
+.intro {font-size: 14px; color: var(--hsbc-slate);}
+.meta {gap: 8px; margin: 16px 0 0;}
+.meta span {
+  border: 1px solid var(--hsbc-border);
+  border-radius: 999px;
+  background: var(--hsbc-soft);
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.layout {gap: 20px;}
+.diagram-panel, .detail {
+  border-color: var(--hsbc-border);
+  border-radius: var(--hsbc-radius);
+  box-shadow: var(--hsbc-shadow);
+}
+.viewport {border-radius: 0 0 var(--hsbc-radius) var(--hsbc-radius);}
+.column-title {color: var(--hsbc-charcoal); font-weight: 700; letter-spacing: .08em;}
+.node {
+  border-radius: var(--hsbc-radius);
+  border-color: var(--hsbc-border);
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  font-family: var(--hsbc-font);
+}
+.node:hover {background: var(--hsbc-soft);}
+.node.selected {background: var(--pill-red-bg); border-color: var(--hsbc-red);}
+.node.connected {border-color: var(--hsbc-red);}
+.node-kicker {color: var(--hsbc-slate); font-weight: 700; letter-spacing: .02em;}
+.node.selected .node-kicker {color: var(--hsbc-red);}
+.node.pending .node-kicker {color: var(--pill-amber-tx);}
+.edge.active {stroke: var(--hsbc-red);}
+.edge.dim {opacity: .55;}
+.tool {border-radius: 999px; min-height: 38px;}
+.source-chip {border-radius: 999px; padding: 7px 11px;}
+.detail-label, .detail .step {font-weight: 700; letter-spacing: .08em;}
+.detail-label {color: var(--hsbc-red);}
+.detail code {background: var(--hsbc-soft); color: var(--hsbc-charcoal);}
+.detail .table-name {background: none; color: var(--hsbc-slate);}
+.detail details {background: var(--hsbc-soft); border: 1px solid var(--hsbc-border); border-radius: 10px; padding: 13px 14px; margin: 10px 0;}
+.detail details > div {padding-top: 4px;}
+.discovery-note {border: 1px solid var(--pill-amber-tx); background: var(--pill-amber-bg); color: var(--pill-amber-tx);}
+.mobile-signal {font-family: var(--hsbc-font); border-radius: var(--hsbc-radius);}
+.mobile-signal[aria-pressed=true] {background: var(--pill-red-bg); border-color: var(--hsbc-red);}
+.flow-footer {gap: 12px; margin-top: 20px;}
+.stage {border-top-color: var(--hsbc-border-strong);}
+@media(max-width:1200px) {
+  .layout {grid-template-columns: 1fr;}
+  .detail {max-height: none; overflow: visible; scroll-margin-top: 16px;}
+}
+@media(max-width:720px) {
+  .page {padding: 14px;}
+  [data-hsbc-theme] .hsbc-topbar {padding: 18px 16px;}
+  .panel-top {padding: 16px;}
+  .meta {gap: 6px;}
+  .meta span {font-size: 10px; letter-spacing: .04em;}
+  .detail {padding: 18px;}
+  .intro {font-size: 13px;}
+}
+@media print {
+  body {background: #fff; color: #000; font-family: var(--hsbc-font);}
+  .page {padding: 0;}
+  [data-hsbc-theme] .hsbc-topbar {box-shadow: none; padding: 12px 16px;}
+  .print-summary table {font-size: 10px;}
+  .print-summary th {-webkit-print-color-adjust: exact; print-color-adjust: exact;}
+  h1 {font-size: 18px;}
+}
+</style>
+</head>
+<body>
+<main class="page" id="bond-radar-flow">
+  <header class="hsbc-topbar">
+    <div class="eyebrow">HSBC · Bond Radar · Internal signal planning</div>
+    <h1>How sources connect to signals</h1>
+    <p class="intro">Explore the candidate sources, attributes and evidence needed for each internal signal. Select a source or signal to inspect its planning details.</p>
+    <div class="meta"><span>Based on Appendix A · 29 October 2026</span><span>Candidate mappings require validation</span><span>SIG05 excluded</span></div>
+  </header>
+  <div class="layout">
+    <section class="diagram-panel" aria-label="Interactive source and signal flowchart">
+      <div class="panel-top">
+        <div><div class="panel-label">Candidate sources → Internal signals</div><div class="panel-hint desktop-hint">Click a node for details. Drag the background to pan.</div></div>
+        <div class="toolbar" aria-label="Diagram view controls">
+          <button type="button" class="tool hsbc-button" id="zoom-out" aria-label="Zoom out">−</button>
+          <span class="zoom-label" id="zoom-label">100%</span>
+          <button type="button" class="tool hsbc-button" id="zoom-in" aria-label="Zoom in">+</button>
+          <button type="button" class="tool hsbc-button hsbc-button-primary" id="fit-view">Fit view</button>
+        </div>
+      </div>
+      <div class="viewport" id="viewport"><div class="world" id="world"><svg class="connections" id="connections" viewBox="0 0 840 900" aria-hidden="true"></svg><div class="column-title" style="left:30px">POSSIBLE SOURCES</div><div class="column-title" style="left:520px">SIGNALS TO INVESTIGATE</div><div id="nodes"></div></div></div>
+      <div class="mobile-map" id="mobile-map" aria-label="Source to signal connections"></div>
+    </section>
+    <aside class="detail" id="detail" aria-label="Selected planning details"><div id="detail-content"></div></aside>
+  </div>
+  <div id="selection-status" class="sr-only" role="status" aria-live="polite"></div>
+  <section class="flow-footer" aria-label="Validation workflow">
+    <div class="stage"><strong>1 · Capture source evidence</strong><span>Start with CLO; preserve raw data, history and schemas for each source.</span></div><div class="arrow" aria-hidden="true">→</div>
+    <div class="stage"><strong>2 · Profile, enrich and test</strong><span>Validate dates, amounts, grain and client mappings on matched examples.</span></div><div class="arrow" aria-hidden="true">→</div>
+    <div class="stage"><strong>3 · Agree dashboard triggers</strong><span>Implement only the signal rules supported by evidence.</span></div>
+  </section>
+  <p class="footnote">Planning reference: <a href="../Bond%20Radar%20Signal%20Planning%20Notes.md">Bond Radar Signal Planning Notes · Appendix A</a>. This diagram contains planning information only and runs offline. Dashed connections indicate source discovery or an unconfirmed table location. Counterparty Core supports CLO identity enrichment; it does not supply a financial trigger. Red highlights the current selection and its connections; it does not indicate risk or signal strength.</p>
+  <section class="print-summary" id="print-summary" style="display:none" aria-label="Complete planning table for printing"></section>
+  <noscript><p>This interactive flowchart needs JavaScript enabled. The complete source table is in Appendix A of the linked planning notes.</p></noscript>
+</main>
+<script id="enrichment-data" type="application/json">{"qualification": "Supporting identity enrichment for CLO-backed SIG01 and SIG06. The user corrected the catalog to Delta on 3 November 2026; live schema/access remains unverified. This is a code-reviewed matching feature, with no current Counterparty sample or measured recovery rate; the previous solution is not being adopted.", "priorPath": "hdfs://HDP46/apps/hive/warehouse/data-refinery/party/party/counterparty-core.delta", "fields": ["`obligor_cin` → `customer_relationship_cin_identifier` and `rct_gid` → `customer_relationship_gid_identifier`. The initial CLO sample lacks `rct_gid`; include it in the next capture.", "CLO `rct_mastergroup_id` → candidate `mastergroup_esr_identifier`. Retain the original ID and `rct_mastergroup_name`.", "Both sources’ `run_date`, Counterparty `customer_relationship_lifecycle_status_code`, stable scoped facility identity and borrower association."], "rules": ["Preserve original keys. Normalise as text by trimming, collapsing whitespace and uppercasing; retain leading zeros. Verify these rules for the actual identifier formats.", "Bound the lookup dates and needed CIN/GID keys. Select the latest observed state per key before applying lifecycle and valid-mastergroup rules. Keep one lookup row per key with distinct candidate IDs, counts and dates.", "Left-join both routes and union their distinct candidates. Preserve a valid CLO ID; record `source_conflict` for disagreement, otherwise `original_preserved`.", "For a missing or invalid original ID, fill only one combined distinct candidate (`matched_unique`). Leave multiple candidates `ambiguous` and none `unmatched`. Do not choose an arbitrary MAX, first row or CIN-first result."], "validation": ["Verify that the proposed catalog table and reviewed Delta path expose the intended source/version. Capture current schema, types, partitions, dates and coverage.", "Previous settings—120-day lookback; A/ACTIVE/Y lifecycle values; blank lifecycle accepted; NO MSG invalid mastergroup—require validation and are not agreed defaults.", "Choose point-in-time group membership or an explicitly labelled current-group restatement. The old overall extraction-date cutoff is not a historical per-row guarantee. Retain both route dates.", "The old code enriches IDs only. Verify a name source separately before assigning a name to a recovered ID.", "Preserve multiple borrower associations. Check lookup uniqueness, row/key multiplicity and financial totals before and after enrichment at the actual observation/borrower grain. Do not count a whole facility in several groups without an agreed allocation rule."], "audit": "Retain original/final IDs and names, original/normalised CIN/GID, source row identity, candidate lists/counts, combined candidates, per-route dates, `mastergroup_match_status`, `mastergroup_match_rule`, conflict/unmatched reasons, source version, extraction bounds, eligibility settings and as-of policy in the derived dataset. Raw inputs remain separate."}</script>
+<script id="appendix-data" type="application/json">[{"signal": "**SIG01 RCF drawing increases**", "assessment": "Identify material increases in drawings for revolving facilities over time.", "sources": "**CLO**, with **Counterparty Core** supporting mastergroup enrichment.", "attributes": "`local_product_type_lbs`; `sub_lim_id`, `rct_facility_ref`, `facility_id`; `source_system`, `mapping_system`, `hsbc_booking_legal_entity`; `run_date`; `ag_acc_bal_drawn_sub_lim_usd`, `facility_drawn_amount`, `facility_limit_amount`, `facility_currency`; `obligor_cin`, `rct_gid`, `rct_mastergroup_id`, `rct_mastergroup_name`. Counterparty fields and audit outputs are specified in the enrichment section.", "needs": "Resolve the empty history export and obtain repeated observations for fixed facility keys. Validate amounts, currency and participation basis. Deduplicate repeated amounts and preserve multiple borrowers. Verify the Counterparty table and combined CIN/GID mapping, historical date policy and name handling. Agree the material-increase period and rule separately from the EUR 50 million total-drawing baseline for investment-grade corporates."}, {"signal": "**SIG02 New RCF term loan or bridge facility**", "assessment": "Identify a new financing facility that may subsequently be refinanced through bonds.", "sources": "**Facilities Limits**", "attributes": "`facility_id`, `cin`, `relationship_id`, `customer_id`; `product_code`, `product_type`; `facility_creation_date`, `loan_approva_dt`, `record_start_dt`, `record_end_dt`, `run_date`, `latest_record`; `facility_ccy`, `proposed_limit`.", "needs": "Obtain recent client-matched examples with populated creation and client fields. Confirm product codes for RCFs, term loans and bridge facilities. Establish whether creation represents signing, approval, administration or migration. Validate record-version rules and the unexpected date-shaped values in `active_facility_ind`. The returned sample is historical and does not validate the required event."}, {"signal": "**SIG03 Derivatives and pre hedging activity**", "assessment": "Identify pre-hedge or swap-pricing enquiries that may relate to future bond financing.", "sources": "**No source identified.** Investigate enquiry or pricing-request records with the corporate derivatives sales or hedging team supporting DCM clients.", "attributes": "**Required information, not confirmed source columns:** client and legal entity identifiers; enquiry or pricing-request identifier; request date; product or activity classification; financing purpose or supporting context; request status; notional, currency and tenor where available; update timestamp.", "needs": "Identify the source system and owner. Confirm whether enquiries are captured as well as executed trades. Obtain examples linked to bond issuance, routine hedging examples and enquiries that did not progress. Define how relevant financing preparation will be distinguished from ordinary swap activity."}, {"signal": "**SIG04 Entity onboarding and KYC activity**", "assessment": "Identify relevant onboarding or KYC events while distinguishing routine refreshes.", "sources": "**Party KYC GDA**", "attributes": "`cin`, `related_case_id`, `related_case_status`; `review_purpose_code`, `review_purpose_desc`; `review_request_created_time_stamp`, `related_case_resolved_time`, `related_case_update_time`, `run_date`; `event_trigger`, `kyc_case_event_trigger_type_code`, `trigger_event_sub_type_multi`.", "needs": "Confirm the meaning of New to Bank, Trigger, Periodic and Remediation purposes and the case timestamps. Obtain recent cases and distinguish business-event dates from dataset refresh dates. Validate repeated-case handling and client coverage. Establish whether signatory changes or new entity onboarding can actually be identified; detailed trigger fields are blank in the returned sample."}, {"signal": "**SIG06 Utilisation using CLO**", "assessment": "Identify facility utilisation greater than 70%.", "sources": "**CLO**, with **Counterparty Core** supporting mastergroup enrichment.", "attributes": "`facility_drawn_amount`, `facility_limit_amount`, `facility_currency`; facility-key, borrower, mastergroup and source-scope fields used for SIG01; `run_date`. `ag_acc_bal_drawn_sub_lim_usd` is another drawn-measure candidate, subject to compatible denominator and unit definitions.", "needs": "Confirm the appropriate approved-limit denominator, matching currency, participation basis and dates. Deduplicate facility amounts and validate mastergroup enrichment without multiplying records or amounts. Agree treatment of missing or zero limits and validate the proposed threshold. Do not mix USD drawn amounts with local-currency limits or interpret high utilisation alone as a covenant breach."}, {"signal": "**SIG06 Utilisation using other candidates**", "assessment": "Investigate utilisation at the source's verified client, relationship or facility grain.", "sources": "**PVD OMNIA DRR**; **DRR Facility Limits** as an alternative.", "attributes": "**PVD:** `drr_utils`, `drr_act_limit`, `drr_carm_limit`, `joi_relationship_id`, `joi_key`, `joi_date`, `etlmonth_drr`, `etlmonth`. **DRR Facility Limits:** `facility_id`, `cin`, `drr_mastergroup_id`, `approved_limit`, `utilisation`, `approved_limit_ccy`, `utilisation_ccy`, `reporting_date`, `run_date`.", "needs": "For PVD, confirm measure definitions, the denominator, currency, record grain and the client-identifier bridge; no explicit facility ID appears in its schema. For DRR, obtain recent records and confirm compatible amount and currency definitions. For both, check current coverage, zero or missing denominators, negative values and alignment with the agreed client cohort. Independent limited samples cannot establish join coverage."}, {"signal": "**SIG06 Explicit covenant pressure or breach**", "assessment": "Assess financial covenant results and, where definitions permit, proximity to a contractual threshold.", "sources": "**Covenants GDA**", "attributes": "`facility_id`, `relationship_id`, `covenant_id`, `active_testing_id`; `covenant_type`, `covenant_status`; `active_testing_actual_value`, `active_testing_final_value`, `active_testing_testing_threshold_value`, `active_testing_testing_threshold_operator`; `active_testing_final_result`, `active_testing_approval_status`, `active_testing_testing_status`, `reporting_dt`, `run_date`.", "needs": "Obtain financial covenant examples with populated measures, operators, thresholds and approved results. Confirm units, breach and headroom interpretation, testing-instance grain and identifier mappings. The current sample contains non-financial reporting obligations, so its Overdue statuses do not establish financial breaches. Prevent covenant joins from multiplying facility amounts."}, {"signal": "**SIG07 Ratings advisory or rating related investigation**", "assessment": "Confirm whether the intended signal is an advisory engagement, a credit-rating change or a relevant category classification.", "sources": "**Facilities Limits** and **PVD OMNIA DRR** as unverified candidates. If these do not identify advisory activity, investigate Ratings Advisory engagement records separately.", "attributes": "**Facilities Limits:** `limit_cat`, `limit_category_type`, `advised_ind`, `facility_grade_code`, `facility_grade_desc`, `sustainable_risk_rating_impact_proposed`, `sustainable_risk_rating_impact_approved`. **PVD:** `drr_crr`, `drr_fac_category`, `joi_facility_category`, `joi_relationship_id`, `joi_date`.", "needs": "Confirm SIG07's business definition with DCM stakeholders. Obtain definitions for CAT-A/B/S, the limit categories, `advised_ind` and the rating scale. Determine whether any attribute explicitly identifies ratings-advisory activity. If rating changes are intended, obtain history with reliable client keys and dates. Category names or numerical ratings alone do not prove an advisory engagement."}]</script>
+<script>
+(() => {
+  'use strict';
+  const rows = JSON.parse(document.getElementById('appendix-data').textContent);
+  const enrichment = JSON.parse(document.getElementById('enrichment-data').textContent);
+  const signals = [
+    {id:'SIG01',title:'RCF drawing increases',y:110,rows:[0]},
+    {id:'SIG02',title:'New financing facilities',y:245,rows:[1]},
+    {id:'SIG03',title:'Derivatives and pre-hedging',y:380,rows:[2]},
+    {id:'SIG04',title:'Onboarding and KYC',y:515,rows:[3]},
+    {id:'SIG06',title:'Utilisation and covenants',y:650,rows:[4,5,6]},
+    {id:'SIG07',title:'Ratings advisory investigation',y:785,rows:[7]}
+  ];
+  const sources = [
+    {id:'clo',title:'CLO',table:'hive.clo_prod.clo_cda_contract_lvl',y:82,signals:['SIG01','SIG06'],rows:[0,4]},
+    {id:'counterparty',title:'Counterparty Core',table:'delta.prod_party_gda.counterparty_core',y:184,signals:['SIG01','SIG06'],rows:[0,4],supporting:true,pending:true},
+    {id:'facilities',title:'Facilities Limits',table:'delta.prod_credit_and_lending_gda.facilities_limits',y:286,signals:['SIG02','SIG07'],rows:[1,7]},
+    {id:'unknown',title:'Source to identify',table:null,y:388,signals:['SIG03'],rows:[2],pending:true},
+    {id:'kyc',title:'Party KYC GDA',table:'delta.prod_party_gda.kyc',y:490,signals:['SIG04'],rows:[3]},
+    {id:'pvd',title:'PVD OMNIA DRR',table:'hive.pvd_prod_wave.pvd_omnia_drr',y:592,signals:['SIG06','SIG07'],rows:[5,7]},
+    {id:'covenants',title:'Covenants GDA',table:'delta.prod_credit_and_lending_gda.covenants',y:694,signals:['SIG06'],rows:[6]},
+    {id:'drr',title:'DRR Facility Limits',table:'delta.prod_credit_and_lending_mda.drr_facility_limits',y:796,signals:['SIG06'],rows:[5],alternative:true}
+  ];
+  const byId = new Map([...sources,...signals].map(n=>[n.id,n]));
+  const viewport = document.getElementById('viewport');
+  const world = document.getElementById('world');
+  const nodes = document.getElementById('nodes');
+  const svg = document.getElementById('connections');
+  const detailContent = document.getElementById('detail-content');
+  const mobileMap = document.getElementById('mobile-map');
+  const status = document.getElementById('selection-status');
+  let selectedId = 'SIG01';
+  let scale = 1, offsetX = 0, offsetY = 0, drag = null, manuallyAdjusted = false;
+  const escapeHTML = value => String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const markdown = value => escapeHTML(value).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  const buttonHTML = (source) => `<button type="button" class="source-chip hsbc-button" data-select="${source.id}">${escapeHTML(source.title)}${source.supporting?' · enrichment':source.alternative?' · alternative':''}</button>`;
+  function linked(id,other) {
+    if (id===other) return true;
+    const n = byId.get(id);
+    return n.signals ? n.signals.includes(other) : sources.some(s=>s.id===other && s.signals.includes(id));
+  }
+  sources.forEach(source => {
+    source.signals.forEach(signalId => {
+      const signal=byId.get(signalId);
+      const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('d',`M 270 ${source.y+37} C 365 ${source.y+37}, 425 ${signal.y+37}, 510 ${signal.y+37}`);
+      path.setAttribute('class','edge'+(source.pending?' discovery':''));
+      path.dataset.source=source.id;path.dataset.signal=signalId;
+      svg.appendChild(path);
+      const tip=document.createElementNS('http://www.w3.org/2000/svg','path');
+      tip.setAttribute('d',`M 502 ${signal.y+32} L 510 ${signal.y+37} L 502 ${signal.y+42}`);
+      tip.setAttribute('class','edge'+(source.pending?' discovery':''));
+      tip.dataset.source=source.id;tip.dataset.signal=signalId;
+      svg.appendChild(tip);
+    });
+  });
+  [...sources,...signals].forEach(n=>{
+    const source=Boolean(n.signals);
+    const button=document.createElement('button');
+    button.type='button';button.className='node'+(n.pending?' pending':'');
+    button.style.left=(source?30:520)+'px';button.style.top=n.y+'px';
+    button.dataset.node=n.id;button.dataset.select=n.id;
+    button.setAttribute('aria-pressed','false');
+    button.innerHTML=source
+      ? `<span class="node-kicker">${n.supporting?'Enrichment · table unconfirmed':n.id==='unknown'?'Source discovery needed':n.alternative?'Alternative candidate':'Candidate source'}</span><span class="node-name">${escapeHTML(n.title)}</span>`
+      : `<span class="node-kicker">${n.id}</span><span class="node-name">${escapeHTML(n.title)}</span>`;
+    nodes.appendChild(button);
+  });
+  signals.forEach(s=>{
+    const group=document.createElement('div');group.className='mobile-row';
+    group.innerHTML=`<div class="mobile-sources">${sources.filter(n=>n.signals.includes(s.id)).map(buttonHTML).join('')}</div><div class="mobile-arrow" aria-hidden="true">↓ Candidate inputs for</div><button type="button" class="mobile-signal" data-select="${s.id}" data-mobile-signal="${s.id}" aria-pressed="false"><strong>${s.id}</strong> · ${escapeHTML(s.title)}</button>`;
+    mobileMap.appendChild(group);
+  });
+  function sectionForRow(row,index,total) {
+    const body=`<div><p class="step">Assessment</p><p>${markdown(row.assessment)}</p><p class="step">Possible sources</p><p>${markdown(row.sources)}</p><p class="step">Candidate attributes or required information</p><p>${markdown(row.attributes)}</p><p class="step">Evidence still needed</p><p>${markdown(row.needs)}</p></div>`;
+    return total>1 ? `<details ${index===0?'open':''}><summary>${markdown(row.signal.replace(/^\*\*|\*\*$/g,''))}</summary>${body}</details>` : body;
+  }
+  function enrichmentDetails() {
+    const list=items=>'<ul>'+items.map(item=>'<li>'+markdown(item)+'</li>').join('')+'</ul>';
+    return `<p class="discovery-note">Proposed catalog location is unconfirmed. Previous Delta access route: <code>${escapeHTML(enrichment.priorPath)}</code>.</p><h3>Required fields and routes</h3>${list(enrichment.fields)}<h3>Matching and decision rules</h3>${list(enrichment.rules)}<h3>Validation before use</h3>${list(enrichment.validation)}<h3>Derived audit evidence</h3><p>${markdown(enrichment.audit)}</p><p><a href="../Bond%20Radar%20Signal%20Planning%20Notes.md#counterparty-core-enrichment-of-clo-mastergroup-data">Full enrichment notes and code-review basis</a></p>`;
+  }
+  function select(id,announce=true) {
+    const node=byId.get(id);
+    if(!node)return;
+    selectedId=id;
+    const source=Boolean(node.signals);
+    document.querySelectorAll('[data-node]').forEach(button=>{
+      const key=button.dataset.node;
+      button.classList.toggle('selected',key===id);
+      button.classList.toggle('connected',key!==id && linked(id,key));
+      button.setAttribute('aria-pressed',String(key===id));
+    });
+    document.querySelectorAll('[data-mobile-signal]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mobileSignal===id)));
+    svg.querySelectorAll('.edge').forEach(edge=>{
+      const active=edge.dataset.source===id || edge.dataset.signal===id;
+      edge.classList.toggle('active',active);edge.classList.toggle('dim',!active);
+    });
+    const description=source
+      ? node.supporting?enrichment.qualification:node.id==='unknown'?'No system or table has been identified for this signal.':`Candidate source for ${node.signals.join(' and ')}${node.alternative?'; retained as an alternative':''}. The mappings remain subject to validation.`
+      : id==='SIG03'?'Source discovery is still required. The information below is requested evidence, not confirmed source fields.':id==='SIG07'?'Category and rating attributes justify investigation. Ratings-advisory activity has not been confirmed.':'Candidate mappings for planning and testing. Review the attributes and validation requirements before implementation.';
+    const connections=source
+      ? `<div class="sources">${node.signals.map(s=>`<button type="button" class="source-chip hsbc-button" data-select="${s}">${s} · ${escapeHTML(byId.get(s).title)}</button>`).join('')}</div>`
+      : `<div class="sources">${sources.filter(s=>s.signals.includes(id)).map(buttonHTML).join('')}</div>`;
+    detailContent.innerHTML=`<div class="detail-label">${source?'Possible source':id+' · Internal signal'}</div><h2>${escapeHTML(node.title)}</h2><p class="description">${escapeHTML(description)}</p>${node.table?`<code class="table-name">${escapeHTML(node.table)}</code>`:''}${connections}${id==='SIG03'||id==='unknown'?'<p class="discovery-note">Identify the source owner and obtain enquiry or pricing-request examples.</p>':''}${node.supporting?enrichmentDetails():''}${node.rows.map((i,index)=>sectionForRow(rows[i],index,node.rows.length)).join('')}`;
+    document.getElementById('detail').scrollTop=0;
+    if(announce) status.textContent=`Selected ${source?'source ':''}${id}: ${node.title}. Planning details updated.`;
+  }
+  function applyTransform(){world.style.transform=`translate(${offsetX}px,${offsetY}px) scale(${scale})`;document.getElementById('zoom-label').textContent=Math.round(scale*100)+'%';document.getElementById('zoom-out').disabled=scale<=.3501;document.getElementById('zoom-in').disabled=scale>=1.7999;}
+  function fit(){if(!viewport.clientWidth)return;scale=Math.min((viewport.clientWidth-24)/840,(viewport.clientHeight-20)/900,1);scale=Math.max(.35,scale);offsetX=(viewport.clientWidth-840*scale)/2;offsetY=(viewport.clientHeight-900*scale)/2;applyTransform();}
+  function zoom(factor,cx=viewport.clientWidth/2,cy=viewport.clientHeight/2){const next=Math.max(.35,Math.min(1.8,scale*factor));const ratio=next/scale;offsetX=cx-(cx-offsetX)*ratio;offsetY=cy-(cy-offsetY)*ratio;scale=next;manuallyAdjusted=true;applyTransform();}
+  document.getElementById('bond-radar-flow').addEventListener('click',event=>{
+    const target=event.target.closest('[data-select]');
+    if(target){select(target.dataset.select);if(window.matchMedia('(max-width:550px)').matches)document.getElementById('detail').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'});}
+  });
+  document.getElementById('zoom-in').addEventListener('click',()=>zoom(1.2));
+  document.getElementById('zoom-out').addEventListener('click',()=>zoom(1/1.2));
+  document.getElementById('fit-view').addEventListener('click',()=>{manuallyAdjusted=false;fit();});
+  viewport.addEventListener('wheel',event=>{if(!event.ctrlKey&&!event.metaKey)return;event.preventDefault();const rect=viewport.getBoundingClientRect();zoom(event.deltaY<0?1.1:1/1.1,event.clientX-rect.left,event.clientY-rect.top);},{passive:false});
+  viewport.addEventListener('pointerdown',event=>{if(event.button!==0||event.target.closest('button'))return;event.preventDefault();drag={id:event.pointerId,x:event.clientX,y:event.clientY,startX:offsetX,startY:offsetY};viewport.setPointerCapture(event.pointerId);viewport.classList.add('dragging');});
+  viewport.addEventListener('pointermove',event=>{if(!drag||drag.id!==event.pointerId)return;offsetX=drag.startX+event.clientX-drag.x;offsetY=drag.startY+event.clientY-drag.y;manuallyAdjusted=true;applyTransform();});
+  const endDrag=()=>{drag=null;viewport.classList.remove('dragging');};viewport.addEventListener('pointerup',endDrag);viewport.addEventListener('pointercancel',endDrag);
+  new ResizeObserver(()=>{if(!manuallyAdjusted)fit();}).observe(viewport);
+  document.getElementById('print-summary').innerHTML=`<table class="hsbc-table"><thead><tr><th>Signal</th><th>Assessment</th><th>Possible sources</th><th>Attributes or required information</th><th>What is needed</th></tr></thead><tbody>${rows.map(r=>'<tr>'+[r.signal,r.assessment,r.sources,r.attributes,r.needs].map(v=>'<td>'+markdown(v)+'</td>').join('')+'</tr>').join('')}</tbody></table>`;
+  select(selectedId,false);fit();
+})();
+</script>
+</body>
+</html>

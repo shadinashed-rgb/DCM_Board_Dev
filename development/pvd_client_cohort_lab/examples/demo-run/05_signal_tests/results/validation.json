@@ -1,0 +1,305 @@
+{
+  "assessment_date": "2026-10-30",
+  "counts": {
+    "clo_enriched": 5,
+    "observations": 20,
+    "signal_evidence": 29,
+    "signal_assessments": 18
+  },
+  "counterparty_match_status_counts": {
+    "matched_unique": 1,
+    "original_preserved": 4
+  },
+  "inputs": [
+    {
+      "source": "clo",
+      "filename": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/.05_signal_tests-6yfo14ab/signal_inputs/clo.csv",
+      "sha256": "283eab093892d3241fce070668f77f661dbb0f3b5261f47ab055d84e365c5513",
+      "rows": 5,
+      "columns": [
+        "run_date",
+        "source_system",
+        "mapping_system",
+        "hsbc_booking_legal_entity",
+        "sub_lim_id",
+        "rct_facility_ref",
+        "facility_id",
+        "obligor_cin",
+        "rct_mastergroup_id",
+        "rct_gid",
+        "rct_mastergroup_name",
+        "local_product_type_lbs",
+        "facility_drawn_amount",
+        "facility_limit_amount",
+        "facility_currency",
+        "ag_acc_bal_drawn_sub_lim_usd",
+        "obligor_customer_name"
+      ],
+      "metadata": {
+        "cohort_run": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/04_reviewed_coverage",
+        "membership_policy": "Reviewed discovery cohort; historical membership is not inferred",
+        "selection": "uniquely linked rows only; candidates and conflicts excluded",
+        "upstream_manifest_sha256": "e6e79ef2a47531ea6f56ebe1330f32fee272e0bc55e72888595544062ac06b70"
+      }
+    },
+    {
+      "source": "counterparty",
+      "filename": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/.05_signal_tests-6yfo14ab/signal_inputs/counterparty.csv",
+      "sha256": "4743ac7882e6029318a4113ffdcad18f4174296a8502619ec9ab193d593fedce",
+      "rows": 3,
+      "columns": [
+        "customer_relationship_cin_identifier",
+        "customer_relationship_gid_identifier",
+        "mastergroup_esr_identifier",
+        "customer_relationship_lifecycle_status_code",
+        "run_date"
+      ],
+      "metadata": {
+        "cohort_run": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/04_reviewed_coverage",
+        "membership_policy": "Reviewed discovery cohort; historical membership is not inferred",
+        "selection": "uniquely linked rows only; candidates and conflicts excluded",
+        "upstream_manifest_sha256": "e6e79ef2a47531ea6f56ebe1330f32fee272e0bc55e72888595544062ac06b70"
+      }
+    },
+    {
+      "source": "facilities",
+      "filename": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/.05_signal_tests-6yfo14ab/signal_inputs/facilities.csv",
+      "sha256": "4d017dbb56c52975dbb5e37e1cc8e08a6818abf696b6b6efaf6a676f23da6f83",
+      "rows": 3,
+      "columns": [
+        "run_date",
+        "facility_id",
+        "cin",
+        "relationship_id",
+        "customer_id",
+        "source_system_name",
+        "country_code",
+        "facility_creation_date",
+        "product_code",
+        "limit_cat",
+        "limit_category_type",
+        "advised_ind"
+      ],
+      "metadata": {
+        "cohort_run": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/04_reviewed_coverage",
+        "membership_policy": "Reviewed discovery cohort; historical membership is not inferred",
+        "selection": "uniquely linked rows only; candidates and conflicts excluded",
+        "upstream_manifest_sha256": "e6e79ef2a47531ea6f56ebe1330f32fee272e0bc55e72888595544062ac06b70"
+      }
+    },
+    {
+      "source": "kyc",
+      "filename": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/.05_signal_tests-6yfo14ab/signal_inputs/kyc.csv",
+      "sha256": "8937b384f345decbe9f3f1b50a4414d18a9afcdc1b9d40844c35db7f095527fc",
+      "rows": 3,
+      "columns": [
+        "run_date",
+        "cin",
+        "related_case_id",
+        "review_purpose_code",
+        "review_purpose_desc",
+        "review_request_created_time_stamp",
+        "related_case_resolved_time",
+        "related_case_update_time",
+        "legal_name"
+      ],
+      "metadata": {
+        "cohort_run": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/04_reviewed_coverage",
+        "membership_policy": "Reviewed discovery cohort; historical membership is not inferred",
+        "selection": "uniquely linked rows only; candidates and conflicts excluded",
+        "upstream_manifest_sha256": "e6e79ef2a47531ea6f56ebe1330f32fee272e0bc55e72888595544062ac06b70"
+      }
+    },
+    {
+      "source": "covenants",
+      "filename": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/.05_signal_tests-6yfo14ab/signal_inputs/covenants.csv",
+      "sha256": "9e800ddd8b4973b4a30796f5ae6f31f5b8b318488397fc8e2f5056b56454697f",
+      "rows": 3,
+      "columns": [
+        "run_date",
+        "facility_id",
+        "covenant_id",
+        "active_testing_id",
+        "relationship_id",
+        "covenant_type",
+        "active_testing_actual_value",
+        "active_testing_final_value",
+        "active_testing_testing_threshold_value",
+        "active_testing_testing_threshold_operator",
+        "active_testing_approval_status",
+        "reporting_dt",
+        "source_system_name",
+        "country_code"
+      ],
+      "metadata": {
+        "cohort_run": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/04_reviewed_coverage",
+        "membership_policy": "Reviewed discovery cohort; historical membership is not inferred",
+        "selection": "uniquely linked rows only; candidates and conflicts excluded",
+        "upstream_manifest_sha256": "e6e79ef2a47531ea6f56ebe1330f32fee272e0bc55e72888595544062ac06b70"
+      }
+    },
+    {
+      "source": "drr",
+      "filename": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/.05_signal_tests-6yfo14ab/signal_inputs/drr.csv",
+      "sha256": "8bc8ee3d2e37633833c66ea73258248631a28db06b7767a4a78830cf014c3928",
+      "rows": 3,
+      "columns": [
+        "reporting_date",
+        "facility_id",
+        "run_date",
+        "cin",
+        "drr_mastergroup_id",
+        "approved_limit",
+        "utilisation",
+        "approved_limit_ccy",
+        "utilisation_ccy",
+        "source_system_name",
+        "rpt_facility_country_code",
+        "gid",
+        "app_relationship_id"
+      ],
+      "metadata": {
+        "cohort_run": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/04_reviewed_coverage",
+        "membership_policy": "Reviewed discovery cohort; historical membership is not inferred",
+        "selection": "uniquely linked rows only; candidates and conflicts excluded",
+        "upstream_manifest_sha256": "e6e79ef2a47531ea6f56ebe1330f32fee272e0bc55e72888595544062ac06b70"
+      }
+    },
+    {
+      "source": "pvd",
+      "filename": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/.05_signal_tests-6yfo14ab/signal_inputs/pvd.csv",
+      "sha256": "fdd97c027810d721c7e32d7112786fb5e22b48e86df1113a653ab67efd315bbc",
+      "rows": 5,
+      "columns": [
+        "joi_date",
+        "joi_relationship_id",
+        "joi_key",
+        "drr_utils",
+        "drr_act_limit",
+        "drr_carm_limit",
+        "drr_crr",
+        "drr_fac_category",
+        "joi_facility_category",
+        "etlmonth_drr",
+        "etlmonth",
+        "joi_relationship_name",
+        "drr_supergroup_id",
+        "drr_supergroup_name",
+        "omn_mastergroup_name"
+      ],
+      "metadata": {
+        "cohort_run": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/04_reviewed_coverage",
+        "membership_policy": "Reviewed discovery cohort; historical membership is not inferred",
+        "selection": "uniquely linked rows only; candidates and conflicts excluded",
+        "upstream_manifest_sha256": "e6e79ef2a47531ea6f56ebe1330f32fee272e0bc55e72888595544062ac06b70"
+      }
+    }
+  ],
+  "issues": [
+    {
+      "source": "clo",
+      "check": "exact_duplicate_rows",
+      "severity": "WARN",
+      "count": 1,
+      "detail": "Raw records retained; derived observations deduplicate repeated values."
+    },
+    {
+      "source": "clo",
+      "check": "input_loaded",
+      "severity": "INFO",
+      "count": 5,
+      "detail": "1 file(s); 17 columns; raw values preserved as text"
+    },
+    {
+      "source": "counterparty",
+      "check": "input_loaded",
+      "severity": "INFO",
+      "count": 3,
+      "detail": "1 file(s); 5 columns; raw values preserved as text"
+    },
+    {
+      "source": "facilities",
+      "check": "input_loaded",
+      "severity": "INFO",
+      "count": 3,
+      "detail": "1 file(s); 12 columns; raw values preserved as text"
+    },
+    {
+      "source": "kyc",
+      "check": "input_loaded",
+      "severity": "INFO",
+      "count": 3,
+      "detail": "1 file(s); 9 columns; raw values preserved as text"
+    },
+    {
+      "source": "covenants",
+      "check": "input_loaded",
+      "severity": "INFO",
+      "count": 3,
+      "detail": "1 file(s); 14 columns; raw values preserved as text"
+    },
+    {
+      "source": "drr",
+      "check": "input_loaded",
+      "severity": "INFO",
+      "count": 3,
+      "detail": "1 file(s); 13 columns; raw values preserved as text"
+    },
+    {
+      "source": "pvd",
+      "check": "exact_duplicate_rows",
+      "severity": "WARN",
+      "count": 1,
+      "detail": "Raw records retained; derived observations deduplicate repeated values."
+    },
+    {
+      "source": "pvd",
+      "check": "input_loaded",
+      "severity": "INFO",
+      "count": 5,
+      "detail": "1 file(s); 15 columns; raw values preserved as text"
+    },
+    {
+      "source": "counterparty",
+      "check": "prior_settings_unverified",
+      "severity": "WARN",
+      "count": 1,
+      "detail": "Lifecycle, lookback and sentinel settings are previous configuration to validate, not approved Bond Radar defaults."
+    },
+    {
+      "source": "counterparty",
+      "check": "catalog_unconfirmed",
+      "severity": "WARN",
+      "count": 1,
+      "detail": "hive.prod_party_gda.counterparty_core is a proposed location; local CSV processing does not verify it."
+    },
+    {
+      "source": "identity",
+      "check": "cin_namespace_unverified",
+      "severity": "WARN",
+      "count": 1,
+      "detail": "CIN joins are provisional. Verify country/source scope or supply explicit source-scoped identity links."
+    },
+    {
+      "source": "counterparty",
+      "check": "enrichment_matched_unique",
+      "severity": "INFO",
+      "count": 1,
+      "detail": "Counts are raw borrower-association observations, not distinct clients or recovered facilities."
+    },
+    {
+      "source": "counterparty",
+      "check": "enrichment_original_preserved",
+      "severity": "INFO",
+      "count": 4,
+      "detail": "Counts are raw borrower-association observations, not distinct clients or recovered facilities."
+    }
+  ],
+  "limitations": [
+    "Development evidence, not production alerts.",
+    "No supplied CSV establishes source-wide completeness.",
+    "SIG03 source absent; SIG07 advisory meaning unverified.",
+    "Cross-source monetary totals are not computed.",
+    "Group names are not populated from Counterparty IDs."
+  ]
+}

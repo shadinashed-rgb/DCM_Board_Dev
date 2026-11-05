@@ -1,0 +1,43 @@
+{
+  "base_as_of": "2026-11-03",
+  "as_of": "2026-11-04",
+  "input_sha256": {
+    "data/current_exports/clo_current_and_previous.csv": "fa76c7d3be518077e36891e5c86cc9a2b3b05dc7e7150f0f89d1346eae8197cc",
+    "data/current_exports/pvd_current.csv": "55d612e6d07dc1d1fad9c6d0c70c4c91133cb511b045e1588c1846fb5484ef6d",
+    "data/current_exports/kyc_current.csv": "bdcafeaa05cf382b53c75f34b2be1e14d9ab1c749735b0bfff422fbae64482ea",
+    "data/current_exports/facilities_current.csv": "e2d8e738781ec010969c21021c8463be95b4b7d8e9cde8d0fab47c45c731cc49",
+    "data/current_exports/drr_current.csv": "0d18bb30a2e938d4a92b89933dd642b8a8d4d1f484eebf8b568f86b92ef7b76c",
+    "data/current_exports/counterparty_current.csv": "4cbd161eb7db6369234ccc546e2bf43a626f62ed8e3afe55d4f48885f3f147e2",
+    "data/application_ratings/application_ratings_softbank..csv": "5ec38a09acd281c6f4dd896637661f8aaf41678ac6c0566d71c86da584b68a44",
+    "data/application_ratings/application_ratings_siemens_energy.csv": "8e3b0baad43a3feb90e3ad8cbc3229bfc59ae92f4479b117b0a80249fcfa3460",
+    "data/application_ratings/application_ratings_vodafone.csv": "56155d59c5863523a9e749a9fc5fb91c8bb4046fad992c22fba33223709ad9c1"
+  },
+  "counts": {
+    "core_rows": 609,
+    "combined_rows": 619,
+    "crr_candidates": 10,
+    "populated_crr": 9,
+    "missing_crr": 1,
+    "utilisation_above_70": 5,
+    "recent_creation_candidates": 8,
+    "recent_approval_candidates": 9,
+    "sig02_approval_dates_linked": 38,
+    "material_drawing_candidates": 0,
+    "covenant_pressure_candidates": 0,
+    "sig01_zero_imputed": 4,
+    "by_signal": {
+      "CTX_CREDIT": 96,
+      "CTX_UTIL": 442,
+      "SIG01": 8,
+      "SIG02": 63
+    },
+    "combined_by_signal": {
+      "CTX_CREDIT": 106,
+      "CTX_UTIL": 442,
+      "SIG01": 8,
+      "SIG02": 63
+    }
+  },
+  "rule_version": "development-2",
+  "note": "Sample-reference counts under the development-2 (meeting-aligned) rules. development-1 expectations are kept in REFERENCE_EXPECTATIONS_development-1.json."
+}

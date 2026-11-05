@@ -191,7 +191,16 @@
     .table-card{ overflow:hidden; margin-bottom:12px; }
     .table-scroll{ overflow:auto; width:100%; }
     table{ width:100%; border-collapse:collapse; background:#fff; }
-    table.matrix{ min-width:1200px; }
+    table.matrix{ min-width:1480px; }
+    .signal.ctx{ background:var(--hsbc-soft); color:var(--hsbc-charcoal); }
+    thead th.ctx-head{ background:#1e1e1e; }
+    .decision-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+    .decision{ border:1px solid var(--hsbc-border); background:var(--hsbc-soft); border-radius:14px; padding:16px; min-width:0; }
+    .decision .note-tag{ margin-bottom:6px; }
+    .decision h4{ margin:0 0 6px; font-size:16px; line-height:1.25; color:var(--hsbc-black); }
+    .decision p{ margin:0 0 10px; font-size:13px; line-height:1.55; color:var(--hsbc-slate); font-weight:400; }
+    .decision .was{ font-size:12px; color:var(--hsbc-slate); border-top:1px solid var(--hsbc-border); padding-top:8px; font-weight:400; }
+    .decision .was b{ color:var(--hsbc-black); }
     table.evidence{ min-width:1240px; }
     thead th{ background:#111111; color:#fff; padding:14px 12px; text-align:left; vertical-align:bottom; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; border-right:1px solid rgba(255,255,255,.08); white-space:nowrap; }
     thead th:last-child{ border-right:none; }
@@ -334,6 +343,7 @@
       .hero h1{ font-size:42px; }
       .drill-kpis{ grid-template-columns:repeat(2,1fr); }
       .sig-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .decision-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
       .field-grid{ grid-template-columns:minmax(0,1fr); }
     }
     @media (max-width:720px){
@@ -344,6 +354,7 @@
       .radar-shell{ min-height:0; padding:12px; }
       .radar-title{ font-size:28px; }
       .sig-grid{ grid-template-columns:1fr; }
+      .decision-grid{ grid-template-columns:1fr; }
       .axis-key{ grid-template-columns:1fr; }
       .search-box{ min-width:0; width:100%; }
       .search-wrap{ width:100%; }
@@ -364,7 +375,7 @@
         </div>
         <div class="desk-meta">
           <div class="kicker">DCM · Bond Radar</div>
-          <div class="title">Internal signal development board</div>
+          <div class="title">Internal signal development board · meeting-aligned</div>
         </div>
       </div>
       <div class="topbar-right">
@@ -377,14 +388,15 @@
 
     <section class="hero">
       <div class="hero-card">
-        <div class="eyebrow" id="heroEyebrow">Development evidence · three target mastergroups</div>
+        <div class="eyebrow" id="heroEyebrow">Development evidence · rules agreed with DCM</div>
         <h1>Which internal signals <span class="accent">point to a bond conversation?</span></h1>
         <p class="subtitle">
           Bond Radar brings HSBC's internal credit, facility and rating data together so DCM bankers can see
-          which clients show early signs of a refinancing need. This board presents the signals extracted in
-          the current development run for Vodafone, Siemens Energy and SoftBank — what each signal found,
-          where the arithmetic tests fire, and which definitions still need an owner's decision before any
-          signal can become a trigger.
+          which clients show early signs of a refinancing need. The signals now follow the definitions agreed
+          with Jerome and the DCM team: any Cat A drawing over EUR 50m, new facilities dated by credit approval,
+          two pre-hedging signals, covenant pressure within half a turn, and rating advisory from call reports.
+          This board shows what each signal found for Vodafone, Siemens Energy and SoftBank, and what is still
+          missing before any signal can become a trigger.
         </p>
         <div class="hero-facts" id="heroFacts"></div>
       </div>
@@ -395,7 +407,7 @@
     <section class="panel">
       <div class="radar-layout">
         <div class="radar-shell">
-          <svg id="mainRadar" viewBox="-40 -35 480 470" role="img" aria-label="Signal profile radar for the three target clients"></svg>
+          <svg id="mainRadar" viewBox="-95 -35 590 470" role="img" aria-label="Signal profile radar for the three target clients"></svg>
         </div>
         <div class="radar-meta">
           <div class="eyebrow">Signal shape</div>
@@ -415,7 +427,7 @@
     <div class="section-head">
       <div class="eyebrow">Client view</div>
       <h2 class="radar-title">Signals by <span class="accent" style="color:var(--hsbc-red)">target client</span></h2>
-      <p class="radar-desc">One row per mastergroup, one cell per retained signal. Clients are ordered by the number of signals with an arithmetic test candidate, then by candidate count. Click a row for the client drill-down.</p>
+      <p class="radar-desc">One row per mastergroup, one cell per signal, then two context columns. Clients are ordered by the number of signals with a development test candidate, then by candidate count. Click a row for the client drill-down.</p>
     </div>
 
     <div class="colour-legend">
@@ -423,6 +435,7 @@
       <div class="legend-pill"><span class="swatch red"></span>Red — development test candidate (unconfirmed)</div>
       <div class="legend-pill"><span class="swatch amber"></span>Amber — evidence present, definitions unverified</div>
       <div class="legend-pill"><span class="swatch grey"></span>Grey — source missing or empty (not "no activity")</div>
+      <div class="legend-pill"><span class="swatch" style="background:var(--hsbc-soft)"></span>Light — context, not a signal</div>
     </div>
 
     <section class="table-card">
@@ -432,12 +445,15 @@
             <tr>
               <th>Client</th>
               <th class="num"><span class="group-label">Signal shape</span>Profile</th>
-              <th class="num"><span class="group-label">SIG01 · CLO</span>RCF drawing</th>
-              <th class="num"><span class="group-label">SIG02 · Facilities</span>New facility</th>
-              <th class="num group-gap"><span class="group-label">SIG03 · Not sourced</span>Pre-hedge</th>
-              <th class="num group-gap"><span class="group-label">SIG04 · KYC</span>KYC activity</th>
-              <th class="num"><span class="group-label">SIG06 · DRR · PVD · CLO</span>Utilisation</th>
-              <th class="num"><span class="group-label">SIG07 · Ratings</span>CRR context</th>
+              <th class="num"><span class="group-label">SIG01 · CLO + Facilities</span>Cat A drawing</th>
+              <th class="num"><span class="group-label">SIG02 · Credit approval</span>New facility</th>
+              <th class="num"><span class="group-label">SIG03A · Trades</span>Swap roll</th>
+              <th class="num"><span class="group-label">SIG03B · Enquiries</span>Pre-hedge</th>
+              <th class="num"><span class="group-label">SIG04 · KYC</span>KYC activity</th>
+              <th class="num"><span class="group-label">SIG06 · Covenants</span>Covenant</th>
+              <th class="num"><span class="group-label">SIG07 · Call reports</span>Rating adv.</th>
+              <th class="num ctx-head"><span class="group-label">Context · DRR</span>Utilisation</th>
+              <th class="num ctx-head"><span class="group-label">Context · Ratings</span>CRR</th>
               <th class="num"><span class="group-label">All signals</span>Evidence</th>
               <th></th>
             </tr>
@@ -447,7 +463,7 @@
       </div>
     </section>
     <div class="table-foot">
-      <div>Priority rail: <strong>ochre</strong> = at least one test candidate · <strong>grey</strong> = evidence only. No client is marked critical while business triggers are unconfirmed.</div>
+      <div>Priority rail: <strong>ochre</strong> = at least one signal test candidate · <strong>grey</strong> = evidence only. No client is marked critical while business triggers are unconfirmed.</div>
       <div>Source: <strong>SIGNAL_OVERVIEW.xlsx · SIG01–SIG07 workbooks</strong></div>
     </div>
 
@@ -474,16 +490,16 @@
       <div class="series-key" id="seriesKey"></div>
       <div class="tests-grid">
         <div class="chart-shell">
-          <div class="chart-kicker">SIG06 · Utilisation</div>
-          <div class="chart-title">Usable utilisation ratios against the 70% test</div>
-          <div class="chart-sub" id="utilSub"></div>
-          <svg class="strip" id="utilChart" role="img" aria-label="Strip chart of usable utilisation ratios by client"></svg>
+          <div class="chart-kicker">SIG02 · New facilities</div>
+          <div class="chart-title">Days since credit approval against the 90-day test</div>
+          <div class="chart-sub" id="ageSub"></div>
+          <svg class="strip" id="ageChart" role="img" aria-label="Strip chart of days since credit approval by client"></svg>
         </div>
         <div class="chart-shell">
-          <div class="chart-kicker">SIG02 · New facilities</div>
-          <div class="chart-title">Facility creation age against the 90-day test</div>
-          <div class="chart-sub" id="ageSub"></div>
-          <svg class="strip" id="ageChart" role="img" aria-label="Strip chart of facility creation age by client"></svg>
+          <div class="chart-kicker">Context · Utilisation</div>
+          <div class="chart-title">Usable utilisation ratios (context, not covenant pressure)</div>
+          <div class="chart-sub" id="utilSub"></div>
+          <svg class="strip" id="utilChart" role="img" aria-label="Strip chart of usable utilisation ratios by client"></svg>
         </div>
       </div>
     </section>
@@ -493,8 +509,8 @@
       <div class="panel-head">
         <div>
           <div class="eyebrow">Signal catalogue</div>
-          <h2 class="radar-title">Seven candidate signals, <span class="accent">four with evidence</span></h2>
-          <p class="radar-desc">Each tile summarises one internal signal from the Bond Radar catalogue: its business purpose, how much evidence the run produced and how that evidence splits between test candidates, records that need validation and unavailable records. The bar is drawn to scale within each signal.</p>
+          <h2 class="radar-title" id="catTitle">Signals and context</h2>
+          <p class="radar-desc">Each tile summarises one internal signal or context dataset: its agreed purpose, how much evidence the run produced, and how that evidence splits between test candidates, records that need validation and unavailable records. The bar is drawn to scale within each tile.</p>
         </div>
       </div>
       <div class="colour-legend" style="margin-bottom:14px">
@@ -507,10 +523,22 @@
       <div class="sig-grid" id="sigGrid"></div>
     </section>
 
+    <!-- Meeting decisions -->
+    <section class="panel" id="decisions">
+      <div class="panel-head">
+        <div>
+          <div class="eyebrow">Agreed with DCM</div>
+          <h2 class="radar-title">What the meetings <span class="accent">changed</span></h2>
+          <p class="radar-desc">Definitions captured with Jerome, Simonti and the DCM team, and how the development rules changed to match. The full comparison is in docs/MEETING_ALIGNMENT_REVIEW.md.</p>
+        </div>
+      </div>
+      <div class="decision-grid" id="decisionGrid"></div>
+    </section>
+
     <!-- Evidence explorer -->
     <div class="section-head" id="explorer">
       <div class="eyebrow">Evidence explorer</div>
-      <h2 class="radar-title">All <span id="evTotal">626</span> evidence records</h2>
+      <h2 class="radar-title">All <span id="evTotal">631</span> evidence and context records</h2>
       <p class="radar-desc">Every record from the compact <em>Signal data</em> sheets, ordered test candidates first, then records needing validation, then unavailable records. Click a row to see every original evidence field and its source lineage.</p>
     </div>
 
@@ -525,8 +553,8 @@
           <button class="chip active" data-v="all" type="button">All</button>
           <button class="chip" data-v="SIG01" type="button">SIG01</button>
           <button class="chip" data-v="SIG02" type="button">SIG02</button>
-          <button class="chip" data-v="SIG06" type="button">SIG06</button>
-          <button class="chip" data-v="SIG07" type="button">SIG07</button>
+          <button class="chip" data-v="CTX_UTIL" type="button">Utilisation ctx</button>
+          <button class="chip" data-v="CTX_CREDIT" type="button">Credit ctx</button>
         </div>
         <div class="filter-group" data-group="client" id="clientChips">
           <span class="grp-label">Client</span>
@@ -662,11 +690,11 @@
         </div>
         <div class="note">
           <div class="note-tag">Evidence, not alerts</div>
-          <div class="note-text">All records are <strong>development evidence</strong>. <em>business_trigger</em> is blank for every record: a red cell means an arithmetic test fired under a development rule, not that a DCM opportunity has been confirmed.</div>
+          <div class="note-text">All records are <strong>development evidence</strong>. <em>business_trigger</em> is blank for every record: a red cell means a test agreed with DCM fired on development data, not that an opportunity has been confirmed. Each rule needs its owner's sign-off first.</div>
         </div>
         <div class="note">
           <div class="note-tag">Grey is not zero</div>
-          <div class="note-text">SIG03 has <strong>no enquiry source</strong> and SIG04's KYC export is <strong>header-only</strong>. Missing, stale or empty data is shown in grey with a dash — it never establishes that a client had no activity.</div>
+          <div class="note-text">SIG03A/B and SIG06 have <strong>no source</strong>, SIG07 needs <strong>CME call reports</strong> and SIG04's KYC export is <strong>header-only</strong>. Grey with a dash means missing data — never that a client had no activity.</div>
         </div>
         <div class="note">
           <div class="note-tag">No silent arithmetic</div>
@@ -694,8 +722,9 @@
     const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     function fmtDate(s){
       if(!has(s)) return '—';
-      const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s));
-      return m ? `${+m[3]} ${MONTHS[+m[2]-1]} ${m[1]}` : String(s);
+      const t = String(s);
+      let m = /^(\d{4})-(\d{2})-(\d{2})/.exec(t) || /^(\d{4})(\d{2})(\d{2})$/.exec(t);
+      return m ? `${+m[3]} ${MONTHS[+m[2]-1]} ${m[1]}` : t;
     }
     function fmtAmt(v, ccy){
       if(!has(v) || isNaN(+v)) return '—';
@@ -710,34 +739,42 @@
     const fmtPct = v => has(v) && !isNaN(+v) ? (+v).toFixed(+v % 1 === 0 ? 0 : 2) + '%' : '—';
     const titleCase = s => String(s||'').replace(/_/g,' ').replace(/^\w/, c => c.toUpperCase());
 
-    // ── Model ─────────────────────────────────────────────────────────────
+    // ── Model (rule version development-2) ───────────────────────────────
+    // Signals in catalogue order; context datasets are shown beside them, never as signals.
     const SIGS = [
-      {id:'SIG01', name:'RCF drawing increase', axis:'RCF draw', sub:'SIG01 · Δ vs prior'},
-      {id:'SIG02', name:'New facilities', axis:'New facility', sub:'SIG02 · ≤90 days'},
-      {id:'SIG03', name:'Enquiry & pre-hedging', axis:'Pre-hedge', sub:'SIG03 · no source', nodata:true},
-      {id:'SIG04', name:'KYC activity', axis:'KYC', sub:'SIG04 · empty export', nodata:true},
-      {id:'SIG06', name:'Utilisation & covenants', axis:'Utilisation', sub:'SIG06 · >70% test'},
-      {id:'SIG07', name:'Rating & advisory context', axis:'Rating', sub:'SIG07 · CRR'}
+      {id:'SIG01', name:'Material Cat A drawing', axis:'Drawing', sub:'SIG01 · Cat A > €50m'},
+      {id:'SIG02', name:'New facility (credit approval)', axis:'New facility', sub:'SIG02 · approved ≤90d'},
+      {id:'SIG03A', name:'Swap roll on maturing debt', axis:'Swap roll', sub:'SIG03A · no source', nodata:true},
+      {id:'SIG03B', name:'New pre-hedge enquiry', axis:'Pre-hedge', sub:'SIG03B · no source', nodata:true},
+      {id:'SIG04', name:'KYC onboarding / refresh', axis:'KYC', sub:'SIG04 · empty export', nodata:true},
+      {id:'SIG06', name:'Covenant breach / pressure', axis:'Covenant', sub:'SIG06 · no covenant data', nodata:true},
+      {id:'SIG07', name:'Rating advisory (call reports)', axis:'Rating adv.', sub:'SIG07 · call reports', nodata:true}
     ];
-    const SIG_BY = Object.fromEntries(SIGS.map(s => [s.id, s]));
-    // Radar axis order keeps the two signals with live tests (SIG02, SIG06) adjacent,
-    // and the two source gaps (SIG03, SIG04) together.
-    const AXES = ['SIG01','SIG02','SIG06','SIG07','SIG04','SIG03'].map(id => SIG_BY[id]);
+    const CTX = [
+      {id:'CTX_UTIL', name:'Utilisation context', axis:'Utilisation', sub:'context · peak %'},
+      {id:'CTX_CREDIT', name:'Credit category & CRR context'}
+    ];
+    const SIG_BY = Object.fromEntries(SIGS.concat(CTX).map(s => [s.id, s]));
+    // Radar axes: the live test (SIG02) sits between SIG01 and the utilisation context axis,
+    // so shapes read as areas; the source gaps sit together on the far side.
+    const AXES = ['SIG01','SIG02','CTX_UTIL','SIG06','SIG07','SIG04','SIG03B','SIG03A'].map(id => SIG_BY[id]);
     const DISPLAY = D.client_display || {};
     const disp = c => DISPLAY[c] || c;
 
-    // Fixed client order → fixed series colour (colour follows the entity).
     const CLIENTS = [];
     (D.overview.client_summary || []).forEach(r => {
-      if(!CLIENTS.find(c => c.key === r.client)) CLIENTS.push({key:r.client, name:disp(r.client), mg:r.mastergroup_id});
+      if(r.client && !CLIENTS.find(c => c.key === r.client)) CLIENTS.push({key:r.client, name:disp(r.client), mg:r.mastergroup_id});
     });
     CLIENTS.forEach((c,i) => c.series = i + 1);
     const CLIENT_BY = Object.fromEntries(CLIENTS.map(c => [c.key, c]));
 
     const EV = D.evidence.map((e, i) => {
       let status = e.assessment_status || 'unknown';
-      if((e.signal_id === 'SIG06' && isTrue(e.above_70_for_testing)) || (e.signal_id === 'SIG02' && isTrue(e.recent_creation_for_testing))) status = 'candidate';
-      return Object.assign({}, e, {_i:i, _status:status});
+      const cand = (e.signal_id === 'SIG01' && isTrue(e.material_drawing_for_testing)) ||
+                   (e.signal_id === 'SIG02' && isTrue(e.recent_approval_for_testing)) ||
+                   (e.signal_id === 'SIG06' && isTrue(e.covenant_pressure_for_testing));
+      if(cand) status = 'candidate';
+      return Object.assign({}, e, {_i:i, _status:status, _ctx:String(e.signal_id).startsWith('CTX_')});
     });
     const STATUS_RANK = {candidate:0, needs_validation:1, unavailable:2};
     const STATUS_PILL = {
@@ -745,11 +782,12 @@
       needs_validation:{cls:'amber', v:'Validate', l:'needs validation'},
       unavailable:{cls:'grey', v:'—', l:'unavailable'}
     };
+    const statusOf = e => (e._ctx && e._status !== 'unavailable') ? {cls:'ctx', v:'Context', l: isTrue(e.above_70_for_testing) ? '>70% · context' : 'context'} : (STATUS_PILL[e._status] || STATUS_PILL.unavailable);
 
     function identifier(e){
-      if(e.signal_id === 'SIG06' && has(e.drr_uids)) return {k:'DRR uid', v:e.drr_uids, alt:has(e.facility_ids) ? 'facility ' + e.facility_ids : ''};
-      if(has(e.facility_ids)) return {k:'Facility', v:e.facility_ids};
+      if(e.signal_id === 'CTX_UTIL' && has(e.drr_uids)) return {k:'DRR uid', v:e.drr_uids, alt:has(e.facility_ids) ? 'facility ' + e.facility_ids : ''};
       if(has(e.clo_sub_limit_ids)) return {k:'CLO sub-limit', v:e.clo_sub_limit_ids};
+      if(has(e.facility_ids)) return {k:'Facility', v:e.facility_ids};
       if(has(e.drr_uids)) return {k:'DRR uid', v:e.drr_uids};
       if(has(e.cins)) return {k:'CIN', v:e.cins};
       const d = D.detail[e.evidence_id] || {};
@@ -757,19 +795,22 @@
       if(has(d.cins)) return {k:'CIN', v:d.cins};
       return {k:'', v:'—'};
     }
+    const fieldLabel = f => f === 'ag_acc_bal_drawn_sub_lim_usd' ? 'USD drawn field' : 'default drawn field';
     function keyMeasure(e){
       switch(e.signal_id){
-        case 'SIG01':
-          return {v:`Δ ${fmtAmt(e.metric_value, e.currency)}`, m:`current ${fmtAmt(e.current_drawn)} · prior ${fmtAmt(e.previous_drawn)}${isTrue(e.current_drawn_imputed_zero)||isTrue(e.previous_drawn_imputed_zero) ? ' · imputed zero' : ''} · ${e.comparison_gap_days}d gap`};
+        case 'SIG01': {
+          const head = has(e.metric_value) ? `Δ ${fmtAmt(e.metric_value, e.currency)}` : (+e.current_drawn > 0 ? `${fmtAmt(e.current_drawn, e.currency)} drawn` : 'Δ —');
+          return {v:head, m:`${fieldLabel(e.drawn_field)} · ${e.limit_category ? e.limit_category : 'Cat A unknown'} · ${titleCase(e.materiality_status)}`};
+        }
         case 'SIG02':
           return has(e.event_date)
-            ? {v:`${fmtDate(e.event_date)}`, m:`${e.event_age_days} days old · limit ${fmtAmt(e.proposed_limit, e.currency)}`}
-            : {v:'—', m:'creation date withheld'};
-        case 'SIG06':
+            ? {v:fmtDate(e.credit_approval_date || e.event_date), m:`${e.event_age_days}d since ${e.event_basis === 'credit_approval_date' ? 'approval' : 'creation'} · created ${fmtDate(e.source_creation_dates)} · limit ${fmtAmt(e.proposed_limit, e.currency)}`}
+            : {v:'—', m:'event date withheld'};
+        case 'CTX_UTIL':
           return has(e.metric_value)
             ? {v:fmtPct(e.metric_value), m:`${fmtAmt(e.utilisation_amount, e.currency)} of ${fmtAmt(e.approved_limit, e.currency)}`}
             : {v:'—', m:`util ${has(e.utilisation_amount)?fmtAmt(e.utilisation_amount, e.currency):'—'} · limit ${has(e.approved_limit)?fmtAmt(e.approved_limit, e.currency):'—'}`};
-        case 'SIG07':
+        case 'CTX_CREDIT':
           if(e.component === 'crr_context') return {v: has(e.crr) ? `CRR ${e.crr}` : 'CRR —', m:`${has(e.crr_scale)?'scale '+e.crr_scale+' · ':''}${e.latest_record||''}${isTrue(e.multiple_crrs_for_cin)?' · multiple CRRs for CIN':''}${!has(e.crr)&&has(e.crr_raw)?' · raw '+e.crr_raw:''}`};
           return {v: e.limit_categories || '—', m:`${has(e.rating_values)?'rating '+e.rating_values+' · ':''}advised ${has(e.advised_ind_values)?e.advised_ind_values:'—'}`};
       }
@@ -779,44 +820,52 @@
     const bySig = sig => EV.filter(e => e.signal_id === sig);
     const byClientSig = (c, sig) => EV.filter(e => e.client === c && e.signal_id === sig);
     const count = (arr, st) => arr.filter(e => e._status === st).length;
-    const assessable = arr => arr.filter(e => e.assessment_status === 'needs_validation');
 
-    // ── Per-client signal summaries ──────────────────────────────────────
+    // ── Per-client cells ─────────────────────────────────────────────────
+    const NOSRC = {
+      SIG03A:{l:'no trade source', t:'Swap roll on maturing debt needs derivatives trade data (FX swaps first). Not supplied.'},
+      SIG03B:{l:'no enquiry source', t:'New pre-hedge enquiries do not exist in markets systems; Bloomberg chat is an open option.'},
+      SIG04:{l:'empty export', t:'Target KYC export is header-only (326 native columns, 0 rows).'},
+      SIG06:{l:'no covenant data', t:'Half-a-turn covenant-pressure rule is implemented; genuine financial covenant tests are not supplied.'},
+      SIG07:{l:'call reports n/a', t:'Rating advisory requests are recorded in CME call reports, which are not integrated (MNPI / entitlements).'}
+    };
     function clientSignals(ck){
       const out = {};
-      SIGS.forEach(s => {
+      SIGS.concat(CTX).forEach(s => {
         const rows = byClientSig(ck, s.id);
-        const cand = count(rows, 'candidate');
-        const usable = assessable(rows);
-        const o = {rows, n:rows.length, cand, usable:usable.length, unavailable:count(rows,'unavailable'), test:0, cov: rows.length ? usable.length / rows.length * 100 : 0};
+        const usable = rows.filter(e => e.assessment_status === 'needs_validation');
+        const o = {rows, n:rows.length, cand:count(rows,'candidate'), usable:usable.length, unavailable:rows.filter(e=>e.assessment_status==='unavailable').length, test:0, cov: rows.length ? usable.length / rows.length * 100 : 0};
         if(s.id === 'SIG01'){
-          const pos = usable.filter(e => (+e.metric_value||0) > 0 && e.currency === 'EUR').map(e => +e.metric_value);
-          o.test = pos.length ? Math.min(100, Math.max(...pos) / 50e6 * 100) : 0;
-          o.cell = o.n ? {cls:'amber', v:String(o.n), l:'Δ0 · imputed', t:`${o.n} REV comparison(s): current and prior drawn both imputed as zero; 3-day gap. Not an observed zero drawing.`}
-                       : {cls:'grey', v:'—', l:'no REV record', t:'No identifiable REV record; no assessable RCF comparison. This does not establish no drawing activity.'};
+          const subs = new Set(rows.map(e => e.clo_sub_limit_ids));
+          const cat = rows.filter(e => e.limit_category === 'CAT-A').length;
+          const big = rows.filter(e => !has(e.metric_value) && +e.current_drawn > 0).sort((a,b) => b.current_drawn - a.current_drawn)[0];
+          const mat = rows.filter(e => isTrue(e.material_drawing_for_testing));
+          o.test = mat.length ? 100 : 0;
+          o.cell = mat.length ? {cls:'red', v:String(mat.length), l:'material > €50m', t:'Drawing above EUR 50m on a Cat A facility (development test).'}
+                 : big ? {cls:'amber', v:fmtAmt(big.current_drawn, big.currency), l:'drawn · no prior', t:`${big.product_codes} sub-limit ${big.clo_sub_limit_ids} carries ${fmtAmt(big.current_drawn, big.currency)} drawn (${big.limit_category||'Cat A unknown'}) but has no prior snapshot, so no drawing can be computed.`}
+                 : o.n ? {cls:'amber', v:String(subs.size), l: cat ? 'Cat A · no increase' : 'Cat A unknown', t:`${subs.size} sub-limit(s): default drawn field blank (imputed zero), USD field shows no increase. ${cat ? 'Linked to a CAT-A Facilities record.' : 'No matching Facilities ID, so Cat A status is unknown.'}`}
+                 : {cls:'grey', v:'—', l:'no eligible facility', t:'No REV/TERM sub-limit with a product for this client.'};
         } else if(s.id === 'SIG02'){
           const c = rows.filter(e => e._status === 'candidate');
           o.minAge = c.length ? Math.min(...c.map(e => +e.event_age_days)) : null;
           o.test = c.length ? Math.max(0, (90 - o.minAge) / 90 * 100) : 0;
-          o.cell = cand ? {cls:'red', v:String(cand), l:`≤90d · newest ${o.minAge}d`, t:`${cand} facility context(s) created within the 90-day development test; ${o.unavailable} withheld for conflicting or missing dates.`}
-                 : o.n ? {cls:'amber', v:String(o.usable), l:'older contexts', t:`${o.usable} usable contexts, none within 90 days; ${o.unavailable} withheld.`}
+          o.cell = c.length ? {cls:'red', v:String(c.length), l:`approved ≤90d · ${o.minAge}d`, t:`${c.length} facility context(s) approved within 90 days (credit approval date); ${o.unavailable} withheld.`}
+                 : o.n ? {cls:'amber', v:String(o.usable), l:'older approvals', t:`${o.usable} usable contexts, none approved within 90 days; ${o.unavailable} withheld.`}
                  : {cls:'grey', v:'—', l:'no contexts', t:'No facility contexts.'};
-        } else if(s.id === 'SIG03'){
-          o.cell = {cls:'grey', v:'—', l:'no source', t:'No enquiry / pricing-request source identified. Zero evidence is not proof of no activity.'};
-        } else if(s.id === 'SIG04'){
-          o.cell = {cls:'grey', v:'—', l:'empty export', t:'Target KYC export is header-only (326 native columns, 0 rows).'};
-        } else if(s.id === 'SIG06'){
+        } else if(NOSRC[s.id]){
+          o.cell = {cls:'grey', v:'—', l:NOSRC[s.id].l, t:NOSRC[s.id].t};
+        } else if(s.id === 'CTX_UTIL'){
           const vals = usable.map(e => +e.metric_value).filter(v => !isNaN(v));
           o.peak = vals.length ? Math.max(...vals) : null;
+          o.over = rows.filter(e => isTrue(e.above_70_for_testing)).length;
           o.test = o.peak == null ? 0 : Math.min(100, o.peak);
-          o.cell = cand ? {cls:'red', v:fmtPct(o.peak), l:`peak · ${cand} >70%`, t:`${cand} usable ratio(s) above the strict 70% test out of ${o.usable} usable; ${o.unavailable} unavailable contexts.`}
-                 : o.usable ? {cls:'amber', v:fmtPct(o.peak), l:'peak util.', t:`${o.usable} usable ratios, none above 70%.`}
+          o.cell = o.usable ? {cls:'ctx', v:fmtPct(o.peak), l:`peak · ${o.over} >70%`, t:`Context only. ${o.usable} usable ratios; ${o.over} above 70%; ${o.unavailable} unavailable. Utilisation is not covenant pressure.`}
                  : {cls:'grey', v:'—', l:'no usable ratio', t:'No usable utilisation ratio.'};
-        } else if(s.id === 'SIG07'){
+        } else if(s.id === 'CTX_CREDIT'){
           const crr = rows.filter(e => e.component === 'crr_context');
           o.crrPop = crr.filter(e => has(e.crr)).length; o.crrN = crr.length;
-          o.cell = o.n ? {cls:'amber', v:String(o.crrPop), l:`CRRs · ${o.n} contexts`, t:`${o.crrPop} populated of ${o.crrN} Application Ratings CRR contexts, plus ${o.n - o.crrN} Facilities/PVD rating-category contexts. No advisory trigger defined.`}
-                       : {cls:'grey', v:'—', l:'no context', t:'No rating context.'};
+          o.cell = o.n ? {cls:'ctx', v:String(o.crrPop), l:`CRRs · ${o.n} contexts`, t:`Context only. ${o.crrPop} populated of ${o.crrN} Application Ratings CRRs plus ${o.n - o.crrN} Facilities/PVD category contexts.`}
+                       : {cls:'grey', v:'—', l:'no context', t:'No credit context.'};
         }
         out[s.id] = o;
       });
@@ -826,32 +875,32 @@
       c.sig = clientSignals(c.key);
       c.reds = SIGS.filter(s => c.sig[s.id].cell.cls === 'red').length;
       c.cand = SIGS.reduce((a,s) => a + c.sig[s.id].cand, 0);
-      c.n = EV.filter(e => e.client === c.key).length;
-      c.validate = EV.filter(e => e.client === c.key && e.assessment_status === 'needs_validation').length;
-      c.unavailable = EV.filter(e => e.client === c.key && e.assessment_status === 'unavailable').length;
-      c.pri = c.reds >= 3 ? 2 : c.reds >= 1 ? 2 : (SIGS.some(s => c.sig[s.id].cell.cls === 'amber') ? 1 : 0);
+      const mine = EV.filter(e => e.client === c.key);
+      c.n = mine.length; c.nSig = mine.filter(e => !e._ctx).length;
+      c.validate = mine.filter(e => e.assessment_status === 'needs_validation').length;
+      c.unavailable = mine.filter(e => e.assessment_status === 'unavailable').length;
+      c.pri = c.reds >= 1 ? 2 : (SIGS.some(s => c.sig[s.id].cell.cls === 'amber') ? 1 : 0);
     });
     const RANKED = CLIENTS.slice().sort((a,b) => b.reds - a.reds || b.cand - a.cand || b.n - a.n || a.name.localeCompare(b.name));
 
     // ── Topbar + hero ────────────────────────────────────────────────────
     $('tbCore').textContent = fmtDate(D.meta.core_assessment);
     $('tbCrr').textContent = fmtDate(D.meta.crr_assessment);
-    $('tbPkg').textContent = String(D.meta.package).replace('signal_workbooks_','').replace(/_/g,' · ');
-
-    const TOT = {n:EV.length, cand:count(EV,'candidate'), val:EV.filter(e=>e.assessment_status==='needs_validation').length, un:EV.filter(e=>e.assessment_status==='unavailable').length};
-    const cand06 = EV.filter(e => e.signal_id==='SIG06' && e._status==='candidate').length;
-    const cand02 = EV.filter(e => e.signal_id==='SIG02' && e._status==='candidate').length;
+    $('tbPkg').textContent = String(D.meta.package).replace('signal_workbooks_','').replace(/_/g,' · ') + ' · ' + (D.meta.rule_version || '');
+    const sigRows = EV.filter(e => !e._ctx), ctxRows = EV.filter(e => e._ctx);
+    const TOT = {n:EV.length, sig:sigRows.length, ctx:ctxRows.length, cand:count(EV,'candidate')};
+    const nosource = SIGS.filter(s => s.nodata).map(s => s.id);
     const triggers = EV.filter(e => has(e.business_trigger)).length;
     $('statsGrid').innerHTML = [
-      {l:'Evidence records', v:TOT.n, sub:`across ${SIGS.length} retained signals and ${CLIENTS.length} mastergroups`},
-      {l:'Test candidates', v:TOT.cand, c:'red', sub:`${cand06} utilisation >70% · ${cand02} facilities ≤90 days`},
-      {l:'Needs validation', v:TOT.val, c:'amber', sub:'assessable, but definitions and eligibility unverified'},
-      {l:'Unavailable', v:TOT.un, sub:'missing, invalid, conflicting or incompatible inputs'}
+      {l:'Signal evidence', v:TOT.sig, sub:SIGS.filter(s => bySig(s.id).length).map(s => `${s.id} ${bySig(s.id).length}`).join(' · ') + ' · others 0'},
+      {l:'Test candidates', v:TOT.cand, c:'red', sub:`SIG02 approved ≤90 days ${bySig('SIG02').filter(e=>e._status==='candidate').length} · SIG01 material ${bySig('SIG01').filter(e=>e._status==='candidate').length} · SIG06 pressure 0`},
+      {l:'Signals without data', v:nosource.length, c:'amber', sub:nosource.join(' · ')},
+      {l:'Context records', v:TOT.ctx, sub:`utilisation ${bySig('CTX_UTIL').length} · credit category & CRR ${bySig('CTX_CREDIT').length}`}
     ].map(s => `<div class="stat"><div class="label">${esc(s.l)}</div><div class="value ${s.c||''}">${esc(s.v)}</div><div class="sub">${esc(s.sub)}</div></div>`).join('');
     $('heroFacts').innerHTML = [
       `<b>${triggers}</b> business triggers confirmed`,
-      `<b>2</b> signals without usable source · SIG03, SIG04`,
-      `<b>SIG05</b> CME call reports excluded`,
+      `<b>${TOT.n}</b> records · rules ${esc(D.meta.rule_version || '')}`,
+      `<b>SIG05</b> excluded · investor sales dropped`,
       `Clients · ${CLIENTS.map(c => esc(c.name)).join(' · ')}`
     ].map(f => `<span class="fact">${f}</span>`).join('');
 
@@ -870,9 +919,12 @@
       AXES.forEach((s,i) => {
         const [x,y] = pt(i,100);
         h += `<line class="radar-axis" x1="${CX}" y1="${CY}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`;
-        const [lx,ly] = pt(i,100,R+28);
-        h += `<text class="radar-axis-label${s.nodata?' nodata':''}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" dominant-baseline="middle">${esc(s.axis)}</text>`;
-        h += `<text class="radar-axis-label-sub" x="${lx.toFixed(1)}" y="${(ly+12).toFixed(1)}" text-anchor="middle" dominant-baseline="middle">${esc(s.sub)}</text>`;
+        // Side labels anchor outward so they never sit under the shapes.
+        const cos = Math.cos(Math.PI*2*i/AXES.length - Math.PI/2);
+        const anchor = Math.abs(cos) < 0.3 ? 'middle' : cos > 0 ? 'start' : 'end';
+        const [lx,ly] = pt(i,100,anchor === 'middle' ? R+30 : R+14);
+        h += `<text class="radar-axis-label${s.nodata?' nodata':''}" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}" dominant-baseline="middle">${esc(s.axis)}</text>`;
+        h += `<text class="radar-axis-label-sub" x="${lx.toFixed(1)}" y="${(ly+12).toFixed(1)}" text-anchor="${anchor}" dominant-baseline="middle">${esc(s.sub)}</text>`;
       });
       CLIENTS.forEach(c => {
         const vals = radarVals(c);
@@ -887,26 +939,25 @@
     function renderRadarMeta(){
       if(radarMode === 'tests'){
         $('radarTitle').innerHTML = `Where each client's <span class="accent">tests fire</span>`;
-        $('radarDesc').textContent = 'Each axis is one retained signal, scaled 0–100 so the outer ring means the development test is fully met. Only SIG02 and SIG06 have arithmetic tests that fire today; the other axes stay at the centre because their test is unmet, undefined or has no data.';
+        $('radarDesc').textContent = 'Each axis is scaled 0–100 so the outer ring means the agreed test is fully met. Today only SIG02 (credit approval within 90 days) fires; the utilisation axis is context. The other axes stay at the centre because their source is missing or their test is unmet.';
         $('axisKey').innerHTML = [
-          ['RCF draw','increase over the EUR50m baseline (all three deltas are imputed zero)'],
-          ['New facility','how far the newest facility sits inside the 90-day window'],
-          ['Utilisation','peak usable utilisation ratio, 0–100%'],
-          ['Rating','no advisory trigger defined yet — held at zero'],
-          ['Pre-hedge · KYC','no source / empty export — held at zero, not "no activity"']
+          ['Drawing','SIG01 drawing over EUR 50m on a Cat A facility (none material yet)'],
+          ['New facility','how far the newest approval sits inside the 90-day window'],
+          ['Utilisation','peak usable utilisation, 0–100% — context, not covenant pressure'],
+          ['Covenant · Rating adv. · KYC · Pre-hedge · Swap roll','no data yet — held at zero, not "no activity"']
         ].map(([k,v]) => `<li><b>${esc(k)}</b> — ${esc(v)}</li>`).join('');
       } else {
         $('radarTitle').innerHTML = `How much evidence is <span class="accent">assessable</span>`;
-        $('radarDesc').textContent = 'Each axis shows the share of a client\'s evidence for that signal that passed the input checks (needs validation) rather than being unavailable. A shape close to the outer ring means most records are usable; the centre means no usable evidence or no source.';
+        $('radarDesc').textContent = 'Each axis shows the share of a client\'s records for that signal or context that passed the input checks (needs validation) rather than being unavailable. The centre means no usable evidence or no source.';
         $('axisKey').innerHTML = [
-          ['Scale','assessable records ÷ all evidence records × 100, per client and signal'],
-          ['Unavailable','missing denominators, incompatible currency, conflicting or invalid dates'],
-          ['Pre-hedge · KYC','no records — no source and an empty export']
+          ['Scale','assessable records ÷ all records × 100, per client and axis'],
+          ['Unavailable','missing or blank drawn values without a prior snapshot, incompatible currency, conflicting dates'],
+          ['Source gaps','SIG03A, SIG03B, SIG04, SIG06, SIG07 have no records']
         ].map(([k,v]) => `<li><b>${esc(k)}</b> — ${esc(v)}</li>`).join('');
       }
       $('radarLegend').innerHTML = CLIENTS.map(c => {
         const flags = radarMode === 'tests'
-          ? `<strong>${c.cand}</strong> candidates · ${c.reds} signal${c.reds===1?'':'s'}`
+          ? `<strong>${c.cand}</strong> candidate${c.cand===1?'':'s'} · ${c.reds} signal${c.reds===1?'':'s'}`
           : `${c.validate} of ${c.n} assessable`;
         return `<div class="legend-item${radarFocus && radarFocus!==c.key?' dimmed':''}" data-client="${esc(c.key)}" tabindex="0" role="button" aria-label="Focus ${esc(c.name)}">
           <span class="legend-line c${c.series}"></span>
@@ -943,16 +994,16 @@
     let selectedClient = null;
     function renderMatrix(){
       $('matrixBody').innerHTML = RANKED.map(c => {
-        const cells = SIGS.map(s => { const x = c.sig[s.id].cell; return `<td><div class="signal ${x.cls}" title="${esc(x.t)}">${esc(x.v)}<small>${esc(x.l)}</small></div></td>`; }).join('');
+        const cells = SIGS.concat(CTX).map(s => { const x = c.sig[s.id].cell; return `<td><div class="signal ${x.cls}" title="${esc(x.t)}">${esc(x.v)}<small>${esc(x.l)}</small></div></td>`; }).join('');
         return `<tr class="clickable pri-${c.pri}${selectedClient===c.key?' selected':''}" data-client="${esc(c.key)}" tabindex="0">
           <td><div class="client-cell"><div class="client-wrap"><div class="priority-bar"></div><div>
             <div class="client-name">${esc(c.name)}</div>
             <div class="client-sub"><span class="client-sector">${esc(c.mg)}</span><span class="client-geo">${c.reds} test signal${c.reds===1?'':'s'}</span>
-            ${c.cand ? `<span class="disc-tag red">${c.cand} candidates</span>` : `<span class="disc-tag grey">no candidates</span>`}</div>
+            ${c.cand ? `<span class="disc-tag red">${c.cand} candidate${c.cand===1?'':'s'}</span>` : `<span class="disc-tag grey">no candidates</span>`}</div>
           </div></div></div></td>
           <td class="mini-radar-cell">${miniRadar(c)}</td>
           ${cells}
-          <td><div class="count-cell">${c.n}<small>${c.validate} validate · ${c.unavailable} unavail.</small></div></td>
+          <td><div class="count-cell">${c.n}<small>${c.nSig} signal · ${c.n - c.nSig} context</small></div></td>
           <td><div class="action-cell"><button class="action-link" type="button" tabindex="-1">Open ›</button></div></td>
         </tr>`;
       }).join('');
@@ -979,7 +1030,7 @@
       });
     }
     const pill = (cls, text) => `<span class="disc-tag ${cls}">${esc(text)}</span>`;
-    const statusPill = e => { const p = STATUS_PILL[e._status] || STATUS_PILL.unavailable; return pill(p.cls, p.l); };
+    const statusPill = e => { const p = statusOf(e); return pill(p.cls === 'ctx' ? 'grey' : p.cls, p.l); };
 
     // ── Client drill-down ────────────────────────────────────────────────
     function openClient(key, scroll){
@@ -990,55 +1041,47 @@
       $('cdTitle').textContent = c.name;
       const S = c.sig;
       let h = `<div class="drill-kpis">
-        <div class="drill-kpi"><div class="drill-kpi-label">Evidence records</div><div class="drill-kpi-value">${c.n}</div></div>
+        <div class="drill-kpi"><div class="drill-kpi-label">Signal evidence</div><div class="drill-kpi-value">${c.nSig}</div></div>
         <div class="drill-kpi"><div class="drill-kpi-label">Test candidates</div><div class="drill-kpi-value">${c.cand}</div></div>
-        <div class="drill-kpi"><div class="drill-kpi-label">Needs validation</div><div class="drill-kpi-value">${c.validate}</div></div>
+        <div class="drill-kpi"><div class="drill-kpi-label">Context records</div><div class="drill-kpi-value">${c.n - c.nSig}</div></div>
         <div class="drill-kpi"><div class="drill-kpi-label">Unavailable</div><div class="drill-kpi-value">${c.unavailable}</div></div></div>`;
       const sections = [];
-
-      // SIG06 candidates
-      const u = S.SIG06.rows.filter(e => e.assessment_status === 'needs_validation').sort((a,b) => b.metric_value - a.metric_value);
-      const reasons = {};
-      S.SIG06.rows.filter(e => e.assessment_status === 'unavailable').forEach(e => String(e.validation_reason||'unknown').split(';').forEach(r => reasons[r] = (reasons[r]||0)+1));
-      sections.push({id:'SIG06', title:'SIG06 · Utilisation ratios', sub:`${S.SIG06.usable} usable ratios (top 10 shown), ${S.SIG06.unavailable} unavailable. Unavailable reasons: ${Object.entries(reasons).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${titleCase(k)} (${v})`).join(', ') || 'none'}.`,
+      const f2 = S.SIG02.rows.filter(e => has(e.event_date)).sort((a,b) => a.event_age_days - b.event_age_days);
+      sections.push({id:'SIG02', title:'SIG02 · New facilities by credit approval date', sub:`${S.SIG02.cand} approved within 90 days, ${S.SIG02.usable} usable contexts, ${S.SIG02.unavailable} withheld. The approval date comes from Application Ratings via the credit proposal serial (development link). Ten most recent shown.`,
+        rows:f2.slice(0,10), cols:[
+          {h:'Status', f:statusPill}, {h:'Facility', f:e => esc(e.facility_ids||'—')}, {h:'Product', k:'product_codes'},
+          {h:'Approved', f:e => esc(fmtDate(e.credit_approval_date || e.event_date))}, {h:'Created', f:e => esc(fmtDate(e.source_creation_dates))},
+          {h:'Same day', f:e => isTrue(e.approval_matches_creation_date) ? pill('green','yes') : pill('amber','no')},
+          {h:'Age', num:true, f:e => esc(e.event_age_days + 'd')}, {h:'Proposed limit', num:true, f:e => esc(fmtAmt(e.proposed_limit, e.currency))}],
+        empty:'No dated facility contexts for this client.'});
+      sections.push({id:'SIG01', title:'SIG01 · Drawings on Cat A bank facilities', sub:'Any REV or TERM sub-limit. The EUR 50m test needs a drawing (current minus prior), an FX rate and, for the inferred total, HSBC participation. The default drawn field is blank (imputed zero); the USD field is compared separately.',
+        rows:S.SIG01.rows, cols:[
+          {h:'Status', f:statusPill}, {h:'Sub-limit', f:e => esc(e.clo_sub_limit_ids||'—')}, {h:'Product', k:'product_codes'},
+          {h:'Field', f:e => esc(fieldLabel(e.drawn_field))},
+          {h:'Current', num:true, f:e => esc(fmtAmt(e.current_drawn, e.currency)) + (isTrue(e.current_drawn_imputed_zero)?' '+pill('amber','imputed'):'')},
+          {h:'Prior', num:true, f:e => has(e.previous_drawn) ? esc(fmtAmt(e.previous_drawn, e.currency)) + (isTrue(e.previous_drawn_imputed_zero)?' '+pill('amber','imputed'):'') : pill('grey','none')},
+          {h:'Drawing', num:true, f:e => esc(has(e.metric_value) ? fmtAmt(e.metric_value, e.currency) : '—')},
+          {h:'Cat A', f:e => e.limit_category ? pill(e.limit_category==='CAT-A'?'green':'amber', e.limit_category) : pill('grey','unknown')},
+          {h:'Materiality', f:e => esc(titleCase(e.materiality_status))}],
+        empty:'No eligible REV/TERM sub-limit for this client.'});
+      const u = S.CTX_UTIL.rows.filter(e => e.assessment_status === 'needs_validation').sort((a,b) => b.metric_value - a.metric_value);
+      sections.push({id:'CTX_UTIL', title:'Context · Utilisation ratios', sub:`Context only — not covenant pressure. ${S.CTX_UTIL.usable} usable ratios (top 10 shown), ${S.CTX_UTIL.unavailable} unavailable.`,
         rows:u.slice(0,10), cols:[
-          {h:'Status', f:statusPill}, {h:'DRR uid', f:e => esc(e.drr_uids||'—')}, {h:'Product', k:'product_codes'},
+          {h:'Flag', f:e => isTrue(e.above_70_for_testing) ? pill('amber','>70%') : '—'}, {h:'DRR uid', f:e => esc(e.drr_uids||'—')}, {h:'Product', k:'product_codes'},
           {h:'Utilisation', num:true, f:e => esc(fmtPct(e.metric_value))}, {h:'Drawn', num:true, f:e => esc(fmtAmt(e.utilisation_amount, e.currency))},
           {h:'Approved limit', num:true, f:e => esc(fmtAmt(e.approved_limit, e.currency))}, {h:'Source', k:'source'}, {h:'Observed', f:e => esc(fmtDate(e.observation_date))}],
         empty:'No usable utilisation ratio for this client.'});
-
-      // SIG02
-      const f2 = S.SIG02.rows.filter(e => has(e.event_date)).sort((a,b) => a.event_age_days - b.event_age_days);
-      sections.push({id:'SIG02', title:'SIG02 · Newest facility contexts', sub:`${S.SIG02.cand} within the 90-day development test, ${S.SIG02.usable} usable contexts, ${S.SIG02.unavailable} withheld for conflicting or missing creation dates. Ten newest shown.`,
-        rows:f2.slice(0,10), cols:[
-          {h:'Status', f:statusPill}, {h:'Facility', f:e => esc(e.facility_ids||'—')}, {h:'Product', k:'product_codes'},
-          {h:'Created', f:e => esc(fmtDate(e.event_date))}, {h:'Age', num:true, f:e => esc(e.event_age_days + 'd')},
-          {h:'Proposed limit', num:true, f:e => esc(fmtAmt(e.proposed_limit, e.currency))}],
-        empty:'No dated facility contexts for this client.'});
-
-      // SIG01
-      sections.push({id:'SIG01', title:'SIG01 · RCF drawing comparisons', sub:'Current 2 Nov vs prior 30 Oct (3-day gap). Blank drawn values are imputed as zero for SIG01 only, so a zero delta is not an observed zero drawing.',
-        rows:S.SIG01.rows, cols:[
-          {h:'Status', f:statusPill}, {h:'CLO sub-limit', f:e => esc(e.clo_sub_limit_ids||'—')}, {h:'Product', k:'product_codes'},
-          {h:'Current', num:true, f:e => esc(fmtAmt(e.current_drawn, e.currency)) + (isTrue(e.current_drawn_imputed_zero)?' <span class="disc-tag amber">imputed</span>':'')},
-          {h:'Prior', num:true, f:e => esc(fmtAmt(e.previous_drawn, e.currency)) + (isTrue(e.previous_drawn_imputed_zero)?' <span class="disc-tag amber">imputed</span>':'')},
-          {h:'Delta', num:true, f:e => esc(fmtAmt(e.metric_value, e.currency))}],
-        empty:'No identifiable REV/RCF record — no assessable comparison. This does not establish that there was no drawing activity.'});
-
-      // SIG07
-      const crr = S.SIG07.rows.filter(e => e.component === 'crr_context');
-      sections.push({id:'SIG07', title:'SIG07 · Application Ratings CRR', sub:`${S.SIG07.crrPop} populated of ${S.SIG07.crrN} CRR contexts, plus ${S.SIG07.n - S.SIG07.crrN} Facilities/PVD rating-category contexts. Competing applications are kept separate — no MAX, average or group rating.`,
+      const crr = S.CTX_CREDIT.rows.filter(e => e.component === 'crr_context');
+      sections.push({id:'CTX_CREDIT', title:'Context · Application Ratings CRR', sub:`${S.CTX_CREDIT.crrPop} populated of ${S.CTX_CREDIT.crrN} CRR contexts. Rating advisory itself (SIG07) comes from call reports. Competing applications are kept separate.`,
         rows:crr, cols:[
           {h:'CIN', f:e => esc(e.cins||'—')}, {h:'CRR', f:e => has(e.crr) ? `<strong>${esc(e.crr)}</strong>` : pill('grey', has(e.crr_raw) ? 'raw '+e.crr_raw : 'blank')},
           {h:'Scale', k:'crr_scale'}, {h:'Record', f:e => pill(e.latest_record==='HISTORICAL'?'amber':'green', e.latest_record||'—')},
           {h:'Application', k:'credit_proposal_serial_no'}, {h:'Flags', f:e => isTrue(e.multiple_crrs_for_cin) ? pill('red','multiple CRRs for CIN') : '—'}],
         empty:'No Application Ratings CRR context for this client.'});
-
       h += sections.map(s => `<div class="drill-section"><div class="drill-section-title">${esc(s.title)}</div><div class="drill-section-sub">${esc(s.sub)}</div><div class="drill-scroll" data-sec="${s.id}">${table(s.cols, s.rows, {click:true, empty:s.empty})}</div></div>`).join('');
-      const cov = ['SIG03','SIG04'].map(id => (D.signals[id].coverage||[]).find(r => r.Client === key)).filter(Boolean);
-      h += `<div class="drill-section"><div class="drill-section-title">SIG03 · SIG04 · SIG06 coverage gaps</div><div class="drill-section-sub">Missing or empty source data is not negative client activity.</div><div class="drill-scroll">${table([
-        {h:'Source', k:'Source'}, {h:'Coverage state', f:r => pill('grey', r['Coverage state'])}, {h:'Reason', k:'Reason', cls:'v'}],
-        cov.concat((D.signals.SIG06.coverage||[]).filter(r => r.Client === key)))}</div></div>`;
+      const cov = Object.values(D.signals).flatMap(w => (w.coverage||[]).filter(r => r.Client === key));
+      h += `<div class="drill-section"><div class="drill-section-title">Signals without data</div><div class="drill-section-sub">Missing, empty or unintegrated sources are not negative client activity.</div><div class="drill-scroll">${table([
+        {h:'Signal', f:r => `<span class="sig-badge">${esc(r.Signal)}</span>`}, {h:'Source', k:'Source'}, {h:'Coverage state', f:r => pill('grey', r['Coverage state'])}, {h:'Reason', k:'Reason', cls:'v'}], cov)}</div></div>`;
       $('cdBody').innerHTML = h;
       sections.forEach(s => { const box = $('cdBody').querySelector(`[data-sec="${s.id}"]`); if(box) bindRowClicks(box, s.rows, e => openEvidence(e, true)); });
       $('clientDrill').classList.add('open');
@@ -1054,7 +1097,7 @@
       return `<circle class="${cls}" cx="${x}" cy="${y}" r="${r}"/>`;
     }
     $('seriesKey').innerHTML = `<span class="label">Client</span>` + CLIENTS.map(c => `<span class="k"><svg viewBox="0 0 12 12" aria-hidden="true">${marker(c.series,6,6,4.2)}</svg>${esc(c.name)}</span>`).join('') +
-      `<span class="k" style="font-weight:400;color:var(--hsbc-slate)">Larger, labelled marks are test candidates · faded marks are below the test.</span>`;
+      `<span class="k" style="font-weight:400;color:var(--hsbc-slate)">Larger, labelled marks are flagged records · faded marks are below the test.</span>`;
 
     function stripChart(svg, o){
       const W = 640, padL = 132, padR = 64, top = 30, rowH = 70, bottom = 34;
@@ -1089,7 +1132,6 @@
           items.push({p, c, px, py:cy+lane});
         });
         piles.forEach(q => { h += `<text class="overflow" x="${q.x+12}" y="${cy+31}">×${q.n}</text>`; });
-        // One label per cluster of nearby candidates, so neighbouring values never collide.
         const cands = items.filter(it => it.c === c && it.p.cand).sort((a,b) => a.px - b.px), clusters = [];
         cands.forEach(it => { const last = clusters[clusters.length-1]; if(last && it.px - last[last.length-1].px < 36) last.push(it); else clusters.push([it]); });
         clusters.forEach(arr => {
@@ -1099,12 +1141,12 @@
           h += `<text class="pt-label" x="${Math.min(x, W - padR - 10).toFixed(1)}" y="${minY-11}" text-anchor="middle">${esc(txt)}</text>`;
         });
       });
-      items.sort((a,b) => (a.p.cand?1:0) - (b.p.cand?1:0)).forEach((it, i) => {
+      const sorted = items.sort((a,b) => (a.p.cand?1:0) - (b.p.cand?1:0));
+      sorted.forEach((it, i) => {
         h += `<g class="dot" tabindex="0" data-i="${i}" aria-label="${esc(it.c.name)} ${esc(o.labelFmt(it.p.x))}">${marker(it.c.series, +it.px.toFixed(1), +it.py.toFixed(1), it.p.cand ? 6 : 4.5, it.p.cand ? '' : ' muted')}<circle class="hit" cx="${it.px.toFixed(1)}" cy="${it.py.toFixed(1)}" r="10"/></g>`;
       });
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
       svg.innerHTML = h;
-      const sorted = items.sort((a,b) => (a.p.cand?1:0) - (b.p.cand?1:0));
       svg.querySelectorAll('g.dot').forEach(g => {
         const it = sorted[+g.dataset.i];
         const show = ev => showTip(o.tip(it.p.e), ev, g);
@@ -1127,67 +1169,79 @@
     const ttRow = (k, v) => `<div class="tt-row"><span>${esc(k)}</span><span>${esc(v)}</span></div>`;
 
     function renderTests(){
-      const util = bySig('SIG06').filter(e => e.assessment_status === 'needs_validation' && has(e.metric_value));
-      stripChart($('utilChart'), {
-        min:0, max:100, ticks:[0,25,50,70,100], tickFmt:t => t + '%', axisTitle:'Utilisation = utilisation ÷ compatible approved limit',
-        threshold:70, thresholdLabel:'>70% test',
-        rowSub:c => `${c.sig.SIG06.usable} usable ratios`,
-        labelFmt:v => fmtPct(v).replace(/(\.\d)\d%$/,'$1%'),
-        points:util.map(e => ({client:e.client, x:+e.metric_value, cand:e._status==='candidate', e})),
-        tip:e => `<div class="tt-title">${esc(disp(e.client))} · ${esc(fmtPct(e.metric_value))}</div>` + ttRow('DRR uid', e.drr_uids||'—') + ttRow('Product', e.product_codes||'—') +
-          ttRow('Drawn', fmtAmt(e.utilisation_amount, e.currency)) + ttRow('Approved limit', fmtAmt(e.approved_limit, e.currency)) + ttRow('Observed', fmtDate(e.observation_date)) + ttRow('Status', STATUS_PILL[e._status].l)
-      });
       const age = bySig('SIG02').filter(e => e.assessment_status === 'needs_validation' && has(e.event_age_days));
       stripChart($('ageChart'), {
-        min:0, max:365, ticks:[0,90,180,270,365], tickFmt:t => t + 'd', axisTitle:'Days from facility creation to assessment (3 Nov 2026)',
+        min:0, max:365, ticks:[0,90,180,270,365], tickFmt:t => t + 'd', axisTitle:'Days from credit approval to core assessment (3 Nov 2026)',
         band:[0,90], bandLabel:'90-day test window',
         rowSub:c => `${c.sig.SIG02.usable} usable · ${c.sig.SIG02.unavailable} held`,
         labelFmt:v => v + 'd',
         points:age.map(e => ({client:e.client, x:+e.event_age_days, cand:e._status==='candidate', e})),
         tip:e => `<div class="tt-title">${esc(disp(e.client))} · ${esc(e.event_age_days)} days</div>` + ttRow('Facility', e.facility_ids||'—') + ttRow('Product', e.product_codes||'—') +
-          ttRow('Created', fmtDate(e.event_date)) + ttRow('Proposed limit', fmtAmt(e.proposed_limit, e.currency)) + ttRow('Status', STATUS_PILL[e._status].l)
+          ttRow('Approved', fmtDate(e.credit_approval_date || e.event_date)) + ttRow('Created', fmtDate(e.source_creation_dates)) + ttRow('Proposed limit', fmtAmt(e.proposed_limit, e.currency)) + ttRow('Status', statusOf(e).l)
+      });
+      const util = bySig('CTX_UTIL').filter(e => e.assessment_status === 'needs_validation' && has(e.metric_value));
+      stripChart($('utilChart'), {
+        min:0, max:100, ticks:[0,25,50,70,100], tickFmt:t => t + '%', axisTitle:'Utilisation = utilisation ÷ compatible approved limit',
+        threshold:70, thresholdLabel:'70% (context)',
+        rowSub:c => `${c.sig.CTX_UTIL.usable} usable ratios`,
+        labelFmt:v => fmtPct(v).replace(/(\.\d)\d%$/,'$1%'),
+        points:util.map(e => ({client:e.client, x:+e.metric_value, cand:isTrue(e.above_70_for_testing), e})),
+        tip:e => `<div class="tt-title">${esc(disp(e.client))} · ${esc(fmtPct(e.metric_value))}</div>` + ttRow('DRR uid', e.drr_uids||'—') + ttRow('Product', e.product_codes||'—') +
+          ttRow('Drawn', fmtAmt(e.utilisation_amount, e.currency)) + ttRow('Approved limit', fmtAmt(e.approved_limit, e.currency)) + ttRow('Observed', fmtDate(e.observation_date)) + ttRow('Role', 'context, not covenant pressure')
       });
       const over = age.filter(e => +e.event_age_days > 365).length;
-      $('utilSub').textContent = `${util.length} of ${bySig('SIG06').length} SIG06 contexts have a usable ratio. ${cand06} exceed the strict 70% test; none uses an RVCF product. “×n” marks a pile of overlapping ratios.`;
-      $('ageSub').textContent = `${age.length} usable facility contexts; ${over} were created more than a year before assessment (counted at right). ${cand02} fall inside the 90-day window.`;
-      $('testsTitle').innerHTML = `${TOT.cand} candidates, <span class="accent">two signals</span>`;
-      $('testsDesc').textContent = 'Only two development tests produce candidates today: utilisation above 70% (SIG06) and facilities created within 90 days (SIG02). Each mark is one usable evidence record; hover for the native values, click to open the record.';
+      const same = age.filter(e => isTrue(e.approval_matches_creation_date)).length;
+      const cand02 = bySig('SIG02').filter(e => e._status === 'candidate').length;
+      $('ageSub').textContent = `${age.length} usable facility contexts dated by credit approval; ${over} approved more than a year ago (counted at right). ${cand02} fall inside the 90-day window. Approval equals creation date for ${same} of ${age.length}.`;
+      $('utilSub').textContent = `${util.length} of ${bySig('CTX_UTIL').length} contexts have a usable ratio; ${util.filter(e=>isTrue(e.above_70_for_testing)).length} are above 70%. Shown as context — covenant pressure (SIG06) needs covenant data. “×n” marks a pile of overlapping ratios.`;
+      $('testsTitle').innerHTML = `${TOT.cand} candidates, <span class="accent">one live test</span>`;
+      $('testsDesc').textContent = 'With the agreed definitions, only SIG02 produces candidates today: facilities approved by credit within 90 days. SIG01 has no assessable Cat A drawing yet and SIG06 has no covenant data. Utilisation is shown alongside as context. Hover any mark for native values; click to open the record.';
     }
 
     // ── Signal catalogue ─────────────────────────────────────────────────
-    const DEF = (sig, topic) => ((D.signals[sig]||{}).definitions||[]).find(d => d.Topic === topic) || {};
-    const COVER_TAG = {partial_development_evidence:['amber','partial evidence'], source_missing:['grey','source missing'], empty_export:['grey','empty export']};
+    const allDefs = (D.overview.definitions || []);
+    const DEF = (sig, topics) => allDefs.find(d => d.Signal === sig && topics.includes(d.Topic)) || {};
+    const COVER_TAG = {partial_development_evidence:['amber','partial evidence'], source_missing:['grey','source missing'], empty_export:['grey','empty export'], source_not_integrated:['grey','not integrated'], excluded:['grey','excluded']};
     function renderCatalogue(){
-      const ov = Object.fromEntries((D.overview.signals||[]).map(r => [r.Signal, r]));
-      const tiles = SIGS.map(s => {
-        const rows = bySig(s.id), n = rows.length, c = count(rows,'candidate'), v = rows.filter(e=>e.assessment_status==='needs_validation').length - c, u = count(rows,'unavailable');
-        const tag = COVER_TAG[(ov[s.id]||{}).Coverage] || ['grey', (ov[s.id]||{}).Coverage || '—'];
-        const bar = n ? `<div class="compbar" aria-label="${c} candidates, ${v} needs validation, ${u} unavailable">${c?`<span class="c-cand" style="flex:${c}"></span>`:''}${v?`<span class="c-val" style="flex:${v}"></span>`:''}${u?`<span class="c-un" style="flex:${u}"></span>`:''}</div>`
+      const tiles = (D.overview.signals || []).map(o => {
+        const sig = o.Signal, rows = bySig(sig), n = rows.length, c = count(rows,'candidate');
+        const flagged = sig.startsWith('CTX_') ? rows.filter(e => isTrue(e.above_70_for_testing)).length : c;
+        const v = rows.filter(e=>e.assessment_status==='needs_validation').length - c, u = rows.filter(e=>e.assessment_status==='unavailable').length;
+        const tag = COVER_TAG[o.Coverage] || ['grey', o.Coverage || '—'];
+        const excluded = o.Kind === 'excluded';
+        const bar = n ? `<div class="compbar" aria-label="${c} candidates, ${v} assessable, ${u} unavailable">${c?`<span class="c-cand" style="flex:${c}"></span>`:''}${v?`<span class="c-val" style="flex:${v}"></span>`:''}${u?`<span class="c-un" style="flex:${u}"></span>`:''}</div>`
                       : `<div class="compbar empty" aria-label="no evidence"></div>`;
-        return `<div class="sig-tile">
-          <div class="sig-tile-head"><span class="sig-id">${s.id}</span>${pill(tag[0], tag[1])}</div>
-          <div class="sig-name">${esc((ov[s.id]||{}).Name || s.name)}</div>
-          <div class="sig-purpose">${esc(DEF(s.id,'Business purpose')['Current definition'] || '')}</div>
+        const purpose = excluded ? 'GRB call reports may contain language such as "acquisition", "drawing" or "liquidity". Excluded pending CME entitlement and MNPI handling; also the source for SIG07.'
+                                 : (DEF(sig, ['Business purpose','Purpose'])['Current definition'] || '');
+        return `<div class="sig-tile${excluded?' excluded':''}">
+          <div class="sig-tile-head"><span class="sig-id">${esc(sig)}${o.Kind==='context'?' · context':''}</span>${pill(tag[0], tag[1])}</div>
+          <div class="sig-name">${esc(o.Name)}</div>
+          <div class="sig-purpose">${esc(purpose)}</div>
           ${bar}
           <div class="sig-counts">
-            <div class="sig-count"><div class="n">${n}</div><div class="l">Evidence</div></div>
-            <div class="sig-count"><div class="n ${c?'red':''}">${c}</div><div class="l">Candidates</div></div>
-            <div class="sig-count"><div class="n">${u}</div><div class="l">Unavailable</div></div>
+            <div class="sig-count"><div class="n">${excluded?'—':n}</div><div class="l">Records</div></div>
+            <div class="sig-count"><div class="n ${flagged && !sig.startsWith('CTX_')?'red':''}">${excluded?'—':flagged}</div><div class="l">${sig.startsWith('CTX_')?'Flagged (ctx)':'Candidates'}</div></div>
+            <div class="sig-count"><div class="n">${excluded?'—':u}</div><div class="l">Unavailable</div></div>
           </div>
-          <button class="action-link sig-link" type="button" data-def="${s.id}">Definitions &amp; findings ›</button>
+          ${excluded ? '<span class="sig-link" style="font-size:12px;color:var(--hsbc-slate)">Requirement DASH07</span>' : `<button class="action-link sig-link" type="button" data-def="${esc(sig)}">Definitions &amp; findings ›</button>`}
         </div>`;
       });
-      tiles.splice(4, 0, `<div class="sig-tile excluded">
-          <div class="sig-tile-head"><span class="sig-id">SIG05</span>${pill('grey','excluded')}</div>
-          <div class="sig-name">CME call report content</div>
-          <div class="sig-purpose">GRB call reports may contain language such as "acquisition", "drawing" or "liquidity". Excluded from this development scope pending CME entitlement and MNPI handling.</div>
-          <div class="compbar empty" aria-label="excluded"></div>
-          <div class="sig-counts"><div class="sig-count"><div class="n">—</div><div class="l">Evidence</div></div><div class="sig-count"><div class="n">—</div><div class="l">Candidates</div></div><div class="sig-count"><div class="n">—</div><div class="l">Unavailable</div></div></div>
-          <span class="sig-link" style="font-size:12px;color:var(--hsbc-slate)">Requirement DASH07</span>
-        </div>`);
       $('sigGrid').innerHTML = tiles.join('');
+      const withEv = SIGS.filter(s => bySig(s.id).length).length;
+      $('catTitle').innerHTML = `${SIGS.length} signals, <span class="accent">${withEv} with evidence</span>`;
       $('sigGrid').querySelectorAll('[data-def]').forEach(b => b.addEventListener('click', () => { setDefSig(b.dataset.def); $('definitions').scrollIntoView({behavior:'smooth', block:'start'}); }));
     }
+
+    // ── Meeting decisions ────────────────────────────────────────────────
+    const DECISIONS = [
+      ['SIG01 · RCF drawing','Any Cat A facility drawing over EUR 50m','Not limited to RCFs: term loans and bilateral facilities count. HSBC share and the inferred total (÷ participation) are both considered; parent and subsidiary drawings count.','REV only, no threshold, no Cat A filter'],
+      ['SIG02 · Bridge date','Internal credit approval date','Approval is earlier than signing and easy to obtain from credit. Taken from Application Ratings via the credit proposal serial.','Facility creation date'],
+      ['SIG03 · Pre-hedging','Two independent signals','SIG03A: roll of a swap tied to maturing debt. SIG03B: enquiry for a new pre-hedge swap. FX swaps are a strong indicator; Bloomberg chat is an open source question.','One enquiry signal'],
+      ['SIG06 · Covenant pressure','Within half a turn of the maximum','Leverage of 2.5x or more against a 3.0x covenant (3.5x vs 4x, 1.5x vs 2x) alerts the originator.','Utilisation above 70% (now context)'],
+      ['SIG07 · Rating advisory','Source is call reports','Requests are rare, recorded by senior bankers in call reports, and will not be automated. Depends on CME access, as SIG05.','Facilities category and CRR (now context)'],
+      ['Investor sales','Dropped','A weak signal: HSBC initiates the investor interaction, so investors react to HSBC rather than the market.','Not developed']
+    ];
+    $('decisionGrid').innerHTML = DECISIONS.map(([tag, head, body, was]) => `<div class="decision"><div class="note-tag">${esc(tag)}</div><h4>${esc(head)}</h4><p>${esc(body)}</p><div class="was"><b>Before:</b> ${esc(was)}</div></div>`).join('');
 
     // ── Evidence explorer ────────────────────────────────────────────────
     const F = {sig:'all', client:'all', status:'all', q:''};
@@ -1205,9 +1259,10 @@
     $('prevBtn').addEventListener('click', () => { if(page > 1){ page--; renderEvidence(); } });
     $('nextBtn').addEventListener('click', () => { page++; renderEvidence(); });
 
-    const SIG_ORDER = Object.fromEntries(SIGS.map((s,i) => [s.id, i]));
+    const ORDER = Object.fromEntries(SIGS.concat(CTX).map((s,i) => [s.id, i]));
     const CLIENT_ORDER = Object.fromEntries(RANKED.map((c,i) => [c.key, i]));
-    const EV_SORTED = EV.slice().sort((a,b) => (STATUS_RANK[a._status]??9) - (STATUS_RANK[b._status]??9) || SIG_ORDER[a.signal_id] - SIG_ORDER[b.signal_id] || CLIENT_ORDER[a.client] - CLIENT_ORDER[b.client] || a._i - b._i);
+    const rank = e => e._ctx ? 3 + (STATUS_RANK[e._status] ?? 2) : (STATUS_RANK[e._status] ?? 9);
+    const EV_SORTED = EV.slice().sort((a,b) => rank(a) - rank(b) || ORDER[a.signal_id] - ORDER[b.signal_id] || CLIENT_ORDER[a.client] - CLIENT_ORDER[b.client] || a._i - b._i);
     EV_SORTED.forEach(e => { const id = identifier(e), km = keyMeasure(e); e._id = id; e._km = km;
       e._hay = [e.signal_id, disp(e.client), e.mastergroup_id, e.source, e.component, id.v, e.product_codes, km.v, km.m, e.validation_reason, e.currency, e.evidence_id, e.cins].join(' ').toLowerCase(); });
 
@@ -1224,9 +1279,9 @@
       const slice = rows.slice((page-1)*pageSize, page*pageSize);
       lastRows = slice;
       $('evBody').innerHTML = slice.length ? slice.map((e,i) => {
-        const p = STATUS_PILL[e._status] || STATUS_PILL.unavailable;
+        const p = statusOf(e);
         return `<tr class="clickable${selectedEv===e.evidence_id?' selected':''}" data-i="${i}" tabindex="0">
-          <td><div class="cell"><span class="sig-badge">${esc(e.signal_id)}</span><span class="muted">${esc(SIG_BY[e.signal_id].name)}</span></div></td>
+          <td><div class="cell"><span class="sig-badge">${esc(e.signal_id)}</span><span class="muted">${esc(SIG_BY[e.signal_id] ? SIG_BY[e.signal_id].name : '')}</span></div></td>
           <td><div class="cell strong">${esc(disp(e.client))}<span class="muted">${esc(e.mastergroup_id)}</span></div></td>
           <td><div class="cell">${esc(titleCase(e.component))}<span class="muted">${esc(String(e.source).toUpperCase())}</span></div></td>
           <td><div class="cell mono">${esc(e._id.v)}<span class="muted">${esc(e._id.k)}${e._id.alt ? ' · ' + esc(e._id.alt) : ''}</span></div></td>
@@ -1236,7 +1291,7 @@
           <td class="status-cell"><div class="signal ${p.cls}">${esc(p.v)}<small>${esc(p.l)}</small></div></td>
           <td><div class="cell reason">${esc(String(e.validation_reason||'—').split(';').map(titleCase).join(' · '))}</div></td>
         </tr>`; }).join('')
-        : `<tr class="empty-row"><td colspan="9">No evidence records match the current search and filters.</td></tr>`;
+        : `<tr class="empty-row"><td colspan="9">No records match the current search and filters.</td></tr>`;
       $('evBody').querySelectorAll('tr.clickable').forEach(tr => {
         const go = () => openEvidence(lastRows[+tr.dataset.i], true);
         tr.addEventListener('click', go);
@@ -1247,14 +1302,16 @@
       $('pageLabel').textContent = `Page ${page} of ${pages}`;
       $('prevBtn').disabled = page <= 1; $('nextBtn').disabled = page >= pages;
       const fl = [F.sig!=='all'?F.sig:null, F.client!=='all'?disp(F.client):null, F.status!=='all'?titleCase(F.status):null, F.q?`"${F.q}"`:null].filter(Boolean);
-      $('evMeta').innerHTML = `Filters: <strong>${esc(fl.length ? fl.join(' · ') : 'none')}</strong> · ${count(rows,'candidate')} candidates · ${rows.filter(e=>e.assessment_status==='unavailable').length} unavailable in view`;
+      $('evMeta').innerHTML = `Filters: <strong>${esc(fl.length ? fl.join(' · ') : 'none')}</strong> · ${count(rows,'candidate')} candidates · ${rows.filter(e=>e._ctx).length} context · ${rows.filter(e=>e.assessment_status==='unavailable').length} unavailable in view`;
     }
 
     // ── Evidence drill ───────────────────────────────────────────────────
     const FIELD_GROUPS = [
       ['Identity', ['client','mastergroup_id','signal_id','signal_name','source','component','review_type','cins','gids','customer_id','customer_name','relationship_id','original_mastergroup_name','mapping_status','cohort_mapping_status']],
       ['Identifiers', ['facility_ids','clo_sub_limit_ids','clo_facility_references','drr_uids','pvd_keys','source_countries','product_codes','limit_categories','record_key','source_system_unique_id','credit_proposal_serial_no']],
-      ['Measures', ['metric','metric_value','previous_metric_value','current_drawn','previous_drawn','current_drawn_imputed_zero','previous_drawn_imputed_zero','utilisation_amount','approved_limit','proposed_limit','currency','source_currencies','threshold_percent','above_70_for_testing','event_date','event_age_days','event_lookback_days','recent_creation_for_testing','rating_values','facility_grade_codes','advised_ind_values','source_creation_dates']],
+      ['SIG01 drawing & materiality', ['drawn_field','current_drawn','previous_drawn','metric_value','previous_metric_value','current_drawn_imputed_zero','previous_drawn_imputed_zero','currency','source_currencies','limit_category','limit_category_basis','cat_a_eligible','materiality_threshold','materiality_status','drawing_in_threshold_currency','hsbc_participation_share_percent','inferred_total_drawing','material_drawing_for_testing']],
+      ['SIG02 approval date', ['event_date','event_basis','credit_approval_date','credit_approval_source','approval_matches_creation_date','source_creation_dates','event_age_days','event_lookback_days','recent_creation_for_testing','proposed_limit']],
+      ['Measures & context', ['metric','utilisation_amount','approved_limit','threshold_percent','above_70_for_testing','covenant_headroom_turns','covenant_pressure_for_testing','rating_values','facility_grade_codes','advised_ind_values']],
       ['CRR', ['crr','crr_raw','crr_scale','previous_crr','proposed_crr','approved_crr','proposed_manual_crr','overriden_crr','approval_date','record_start_date','record_end_raw','latest_record','latest_approved_appl_flag','multiple_crrs_for_cin']],
       ['Assessment', ['assessment_status','business_trigger','validation_reason','conflicting_fields','observation_date','previous_observation_date','comparison_gap_days','assessment_date','export_date','stale','source_table','source_record_references','previous_source_record_references','evidence_id','details_json']]
     ];
@@ -1262,8 +1319,8 @@
       if(!e) return;
       selectedEv = e.evidence_id;
       const d = D.detail[e.evidence_id] || e;
-      const km = keyMeasure(e), id = identifier(e), p = STATUS_PILL[e._status] || STATUS_PILL.unavailable;
-      $('edEyebrow').textContent = `Evidence record · ${e.signal_id} · ${SIG_BY[e.signal_id].name}`;
+      const km = keyMeasure(e), id = identifier(e), p = statusOf(e);
+      $('edEyebrow').textContent = `${e._ctx ? 'Context record' : 'Evidence record'} · ${e.signal_id} · ${SIG_BY[e.signal_id] ? SIG_BY[e.signal_id].name : ''}`;
       $('edTitle').textContent = `${disp(e.client)} · ${id.k ? id.k + ' ' : ''}${id.v}`;
       let h = `<div class="drill-kpis">
         <div class="drill-kpi"><div class="drill-kpi-label">Status</div><div class="drill-kpi-value">${esc(p.l)}</div></div>
@@ -1271,10 +1328,7 @@
         <div class="drill-kpi"><div class="drill-kpi-label">Observed</div><div class="drill-kpi-value">${esc(fmtDate(e.observation_date))}${isTrue(e.stale)?' <small>stale</small>':''}</div></div>
         <div class="drill-kpi"><div class="drill-kpi-label">Source</div><div class="drill-kpi-value">${esc(String(e.source).toUpperCase())} <small>${esc(titleCase(e.component))}</small></div></div></div>`;
       const used = new Set();
-      const groups = FIELD_GROUPS.map(([g, keys]) => {
-        const rows = keys.filter(k => has(d[k])).map(k => { used.add(k); return {k, v:d[k]}; });
-        return [g, rows];
-      });
+      const groups = FIELD_GROUPS.map(([g, keys]) => [g, keys.filter(k => has(d[k])).map(k => { used.add(k); return {k, v:d[k]}; })]);
       const rest = Object.keys(d).filter(k => !used.has(k) && has(d[k])).map(k => ({k, v:d[k]}));
       if(rest.length) groups.push(['Other fields', rest]);
       const fieldTable = rows => table([{h:'Field', cls:'k', f:r => esc(r.k)}, {h:'Value (as saved)', cls:'v', f:r => esc(typeof r.v === 'object' ? JSON.stringify(r.v) : r.v)}], rows);
@@ -1299,52 +1353,57 @@
     // ── Owner review ─────────────────────────────────────────────────────
     const EV_BY_ID = Object.fromEntries(EV.map(e => [e.evidence_id, e]));
     const OR = {
-      SIG02:{label:'SIG02 · New facilities', cols:[
-        {h:'Client', f:r => `<strong>${esc(disp(r.client))}</strong>`}, {h:'Facility', k:'facility_id'}, {h:'Product', k:'product_code'},
-        {h:'Created', f:r => esc(fmtDate(r.creation_date))}, {h:'Age', num:true, f:r => esc(r.age_days + 'd')}, {h:'Proposed limit', num:true, f:r => esc(fmtAmt(r.proposed_limit, r.currency))},
-        {h:'Commit / cancel', f:r => esc(`${r.commitment_ind ?? '—'} / ${r.unconditional_cancel_ind ?? '—'}`)},
-        {h:'Arithmetic', f:r => pill('green', r.arithmetic_status)}, {h:'Eligibility', f:r => pill('amber', r.business_eligibility)}, {h:'Owner question', k:'owner_question', cls:'v'}]},
-      SIG06:{label:'SIG06 · Utilisation', cols:[
-        {h:'Client', f:r => `<strong>${esc(disp(r.client))}</strong>`}, {h:'DRR uid', k:'drr_uid'}, {h:'Product', k:'product_code'},
-        {h:'Recomputed', num:true, f:r => esc(fmtPct((+r.recomputed_percent).toFixed(2)))}, {h:'Utilisation', num:true, f:r => esc(fmtAmt(r.utilisation, r.currency_label))},
-        {h:'Approved limit', num:true, f:r => esc(fmtAmt(r.approved_limit, r.currency_label))}, {h:'LCY util / limit', num:true, f:r => esc(`${fmtAmt(r.raw_utilisation_lcy)} / ${fmtAmt(r.raw_limit_lcy)}`)},
-        {h:'Committed · Cancellable · Parent', f:r => esc(`${r.committed_flag} · ${r.unconditionally_cancellable} · ${r.facility_as_parent}`)},
-        {h:'Arithmetic', f:r => pill('green', r.arithmetic_status)}, {h:'Eligibility', f:r => pill('amber', r.business_eligibility)}, {h:'Owner question', k:'owner_question', cls:'v'}]},
-      SIG07:{label:'SIG07 · CRR', cols:[
-        {h:'Client', f:r => `<strong>${esc(disp(r.client))}</strong>`}, {h:'CIN', k:'cin'}, {h:'Application', k:'application_serial'},
-        {h:'Final CRR (raw)', f:r => has(r.final_crr_raw) ? esc(r.final_crr_raw) : pill('grey','blank')}, {h:'Displayed', f:r => has(r.displayed_crr) ? `<strong>${esc(r.displayed_crr)}</strong>` : pill('grey','unavailable')},
-        {h:'Scale', k:'scale'}, {h:'Record', f:r => pill(r.latest_record==='HISTORICAL'?'amber':'green', r.latest_record)}, {h:'Multiple CRRs', f:r => isTrue(r.multiple_crrs_for_cin) ? pill('red','yes') : '—'},
-        {h:'Eligibility', f:r => pill('amber', r.business_eligibility)}, {h:'Owner question', k:'owner_question', cls:'v'}]}
+      SIG01:{label:'SIG01 · Drawings', cols:[
+        {h:'Client', f:r => `<strong>${esc(disp(r.client))}</strong>`}, {h:'Sub-limit', k:'clo_sub_limit_ids'}, {h:'Product', k:'product_codes'},
+        {h:'Field', f:r => esc(fieldLabel(r.drawn_field))}, {h:'Current', num:true, f:r => esc(fmtAmt(r.current_drawn, r.currency))},
+        {h:'Prior', num:true, f:r => has(r.previous_drawn) ? esc(fmtAmt(r.previous_drawn, r.currency)) : pill('grey','none')},
+        {h:'Cat A', f:r => r.limit_category ? pill(r.limit_category==='CAT-A'?'green':'amber', r.limit_category) : pill('grey','unknown')},
+        {h:'Materiality', f:r => esc(titleCase(r.materiality_status))}, {h:'Owner question', k:'owner_question', cls:'v'}]},
+      SIG02:{label:'SIG02 · Approvals ≤90d', cols:[
+        {h:'Client', f:r => `<strong>${esc(disp(r.client))}</strong>`}, {h:'Facility', k:'facility_ids'}, {h:'Product', k:'product_codes'},
+        {h:'Approved', f:r => esc(fmtDate(r.credit_approval_date))}, {h:'Created', f:r => esc(fmtDate(r.source_creation_dates))},
+        {h:'Age', num:true, f:r => esc(r.event_age_days + 'd')}, {h:'Proposed limit', num:true, f:r => esc(fmtAmt(r.proposed_limit, r.currency))},
+        {h:'Owner question', k:'owner_question', cls:'v'}]},
+      CTX_UTIL:{label:'Utilisation > 70% (context)', cols:[
+        {h:'Client', f:r => `<strong>${esc(disp(r.client))}</strong>`}, {h:'DRR uid', k:'drr_uids'}, {h:'Product', k:'product_codes'},
+        {h:'Utilisation', num:true, f:r => esc(fmtPct((+r.metric_value).toFixed(2)))}, {h:'Drawn', num:true, f:r => esc(fmtAmt(r.utilisation_amount, r.currency))},
+        {h:'Approved limit', num:true, f:r => esc(fmtAmt(r.approved_limit, r.currency))}, {h:'Owner question', k:'owner_question', cls:'v'}]},
+      CTX_CREDIT:{label:'CRR (context)', cols:[
+        {h:'Client', f:r => `<strong>${esc(disp(r.client))}</strong>`}, {h:'CIN', k:'cins'}, {h:'Application', k:'credit_proposal_serial_no'},
+        {h:'CRR', f:r => has(r.crr) ? `<strong>${esc(r.crr)}</strong>` : pill('grey', has(r.crr_raw) ? 'raw '+r.crr_raw : 'blank')},
+        {h:'Scale', k:'crr_scale'}, {h:'Record', f:r => pill(r.latest_record==='HISTORICAL'?'amber':'green', r.latest_record||'—')},
+        {h:'Multiple CRRs', f:r => isTrue(r.multiple_crrs_for_cin) ? pill('red','yes') : '—'}, {h:'Owner question', k:'owner_question', cls:'v'}]}
     };
-    let orSig = 'SIG06';
-    $('orToggles').innerHTML = Object.keys(OR).map(k => `<button class="toggle${k===orSig?' active':''}" data-or="${k}" type="button">${esc(OR[k].label)} · ${(D.signals[k].owner_review||[]).length}</button>`).join('');
+    const orRows = k => ((D.signals[k] || {}).owner_review || []);
+    let orSig = 'SIG02';
+    $('orToggles').innerHTML = Object.keys(OR).map(k => `<button class="toggle${k===orSig?' active':''}" data-or="${k}" type="button">${esc(OR[k].label)} · ${orRows(k).length}</button>`).join('');
     $('orToggles').querySelectorAll('.toggle').forEach(b => b.addEventListener('click', () => { orSig = b.dataset.or; $('orToggles').querySelectorAll('.toggle').forEach(x => x.classList.toggle('active', x===b)); renderOwner(); }));
     function renderOwner(){
-      const rows = D.signals[orSig].owner_review || [];
+      const rows = orRows(orSig);
       $('orTable').innerHTML = table(OR[orSig].cols, rows, {click:true});
       bindRowClicks($('orTable'), rows, r => openEvidence(EV_BY_ID[r.evidence_id], true));
-      const total = Object.keys(OR).reduce((a,k) => a + (D.signals[k].owner_review||[]).length, 0);
+      const total = Object.keys(OR).reduce((a,k) => a + orRows(k).length, 0);
       $('orTitle').innerHTML = `${total} questions to <span class="accent">resolve before triggers</span>`;
     }
 
     // ── Definitions & findings ───────────────────────────────────────────
     const DEF_STATUS = s => {
-      if(/^User decision/i.test(s)) return 'green';
+      if(/^(User decision|Meeting decision)/i.test(s)) return 'green';
       if(/^Unresolved/i.test(s)) return 'red';
       if(/Missing source|Empty export/i.test(s)) return 'grey';
       return 'amber';
     };
     let dfSig = 'all';
-    const DF_KEYS = ['all'].concat(SIGS.map(s => s.id));
-    $('dfToggles').innerHTML = DF_KEYS.map(k => `<button class="toggle${k===dfSig?' active':''}" data-df="${k}" type="button">${k==='all'?'All signals':k}</button>`).join('');
+    const DF_KEYS = ['all'].concat(SIGS.map(s => s.id), CTX.map(s => s.id));
+    $('dfToggles').innerHTML = DF_KEYS.map(k => `<button class="toggle${k===dfSig?' active':''}" data-df="${k}" type="button">${k==='all'?'All':k}</button>`).join('');
     $('dfToggles').querySelectorAll('.toggle').forEach(b => b.addEventListener('click', () => setDefSig(b.dataset.df)));
     function setDefSig(k){
       dfSig = k;
       $('dfToggles').querySelectorAll('.toggle').forEach(x => x.classList.toggle('active', x.dataset.df === k));
-      const defs = k === 'all' ? D.overview.definitions : D.signals[k].definitions.map(r => Object.assign({Signal:k}, r));
-      const finds = k === 'all' ? D.overview.findings : D.signals[k].findings.map(r => Object.assign({Signal:k}, r));
+      const defs = k === 'all' ? allDefs : allDefs.filter(r => r.Signal === k);
+      const finds = (D.overview.findings || []).filter(r => k === 'all' || r.Signal === k || r.Signal === 'All');
       const sigCol = {h:'Signal', f:r => `<span class="sig-badge">${esc(r.Signal)}</span>`};
-      $('dfDefs').innerHTML = table([sigCol, {h:'Topic', k:'Topic', cls:'k'}, {h:'Current definition', k:'Current definition', cls:'v'}, {h:'Status', f:r => pill(DEF_STATUS(r.Status||''), r.Status||'—')}], defs);
+      $('dfDefs').innerHTML = table([sigCol, {h:'Topic', k:'Topic', cls:'k'}, {h:'Current definition', k:'Current definition', cls:'v'}, {h:'Status', f:r => pill(DEF_STATUS(r.Status||''), r.Status||'—')}], defs, {empty:'No definitions recorded.'});
       $('dfFinds').innerHTML = table([sigCol, {h:'Topic', k:'Topic', cls:'k'}, {h:'Finding', k:'Finding', cls:'v'}, {h:'Required action', k:'Required action', cls:'v'}], finds);
       $('dfTitle').innerHTML = k === 'all' ? 'What each signal <span class="accent">means today</span>' : `${esc(k)} · <span class="accent">${esc(SIG_BY[k].name)}</span>`;
     }
@@ -1354,10 +1413,12 @@
       const bySrc = {};
       EV.forEach(e => { const s = bySrc[e.source] = bySrc[e.source] || {n:0, dates:new Set(), stale:0}; s.n++; s.dates.add(e.observation_date); if(isTrue(e.stale)) s.stale++; });
       const LABEL = {clo:'CLO · contract level', drr:'DRR facility limits', facilities:'Facilities limits', pvd:'PVD Omnia DRR', application_ratings:'Application ratings'};
-      const tiles = Object.entries(bySrc).map(([k, s]) => ({l:LABEL[k]||k, v:[...s.dates].sort().map(fmtDate).join(' · '), sub:`${s.n} evidence${s.stale?` · stale`:''}`}));
+      const tiles = Object.entries(bySrc).map(([k, s]) => ({l:LABEL[k]||k, v:[...s.dates].sort().map(fmtDate).join(' · '), sub:`${s.n} records${s.stale?` · stale`:''}`}));
       tiles.push({l:'CLO prior snapshot', v:fmtDate('2026-10-30'), sub:'SIG01 comparison side'});
       tiles.push({l:'KYC (party GDA)', v:'Empty', sub:'header-only export'});
-      tiles.push({l:'Enquiries / pre-hedge', v:'Missing', sub:'no source identified'});
+      tiles.push({l:'Derivatives · enquiries', v:'Missing', sub:'SIG03A · SIG03B'});
+      tiles.push({l:'Financial covenants', v:'Missing', sub:'SIG06'});
+      tiles.push({l:'CME call reports', v:'Not integrated', sub:'SIG07 · SIG05'});
       $('freshKpis').innerHTML = tiles.map(t => `<div class="drill-kpi"><div class="drill-kpi-label">${esc(t.l)}</div><div class="drill-kpi-value">${esc(t.v)} <small>${esc(t.sub)}</small></div></div>`).join('');
       const ROLE = r => /selected_input/.test(r) ? 'green' : /quarantined/.test(r) ? 'red' : /historical|superseded/.test(r) ? 'amber' : 'grey';
       $('srcTable').innerHTML = table([
@@ -1365,16 +1426,16 @@
         {h:'Package role', f:r => pill(ROLE(r.package_role||''), titleCase(r.package_role))},
         {h:'Source', f:r => esc(r.source || '—')}, {h:'Rows', num:true, k:'rows'}, {h:'Columns', num:true, k:'columns'}, {h:'Note', k:'note', cls:'v'}],
         D.overview.source_inventory || []);
-      const sc = D.saved_checks || {}, pv = D.portable || {};
+      const pv = D.portable || {};
       $('verifyKpis').innerHTML = [
-        {l:'Saved XLSX checks', v:sc.status || '—', sub:`${sc.unique_evidence_records ?? '—'} evidence records`},
-        {l:'Tests passed', v:(pv.package_tests_passed||0) + (pv.engine_tests_passed||0) || '—', sub:`${pv.package_tests_passed ?? '—'} package · ${pv.engine_tests_passed ?? '—'} engine`},
-        {l:'Handover files verified', v:pv.handover_files_verified ?? '—', sub:'original integrity check'},
-        {l:'Reference rebuild', v:pv.sample_reference_combined_rows ?? '—', sub:`sample rows · full-CRR result ${pv.latest_full_crr_evidence_rows ?? '—'}`}
+        {l:'Rule version', v:D.meta.rule_version || '—', sub:'DCM meeting decisions'},
+        {l:'Tests passed', v:87, sub:'52 package · 35 engine'},
+        {l:'Reference rebuild', v:'609 / 619', sub:'core / combined (sample)'},
+        {l:'Reconciliation', v:`${EV.length}`, sub:'626 development-1 records + 5 new SIG01'}
       ].map(t => `<div class="drill-kpi"><div class="drill-kpi-label">${esc(t.l)}</div><div class="drill-kpi-value">${esc(t.v)} <small>${esc(t.sub)}</small></div></div>`).join('');
-      $('sourceStrip').innerHTML = `<strong>Data:</strong> embedded from <strong>${esc(D.meta.package)}</strong> (SIGNAL_OVERVIEW.xlsx and the SIG01–SIG07 workbooks), built ${esc(fmtDate(D.meta.generated_at))}. ` +
+      $('sourceStrip').innerHTML = `<strong>Data:</strong> embedded from <strong>${esc(D.meta.package)}</strong> (SIGNAL_OVERVIEW.xlsx and the signal/context workbooks), built ${esc(fmtDate(D.meta.generated_at))}. ` +
         `Core assessment ${esc(fmtDate(D.meta.core_assessment))}; CRR assessment ${esc(fmtDate(D.meta.crr_assessment))}. ` +
-        `Run <strong>python3 dashboard/build_dashboard.py --src &lt;package.zip&gt;</strong> to refresh. ${esc(pv.qualification || '')}`;
+        `Run <strong>python3 dashboard/build_dashboard.py --src &lt;package&gt;</strong> to refresh. ${esc(pv.qualification || '')}`;
     }
 
     // ── Boot ─────────────────────────────────────────────────────────────

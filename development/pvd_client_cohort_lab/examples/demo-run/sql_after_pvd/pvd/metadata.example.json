@@ -1,0 +1,11 @@
+{
+  "source": "pvd",
+  "table": "hive.pvd_prod_wave.pvd_omnia_drr",
+  "start": "2026-10-01",
+  "end": "2026-10-30",
+  "query_file": "FILL_ACTUAL_QUERY",
+  "extracted_at_utc": "FILL",
+  "execution_status": "FILL",
+  "complete_or_limited": "FILL",
+  "coverage": "User-selected cohort; completeness unverified"
+}

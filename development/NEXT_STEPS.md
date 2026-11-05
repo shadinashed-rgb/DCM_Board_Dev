@@ -1,0 +1,61 @@
+# Next steps after the meeting alignment — 5 November 2026
+
+Rule version **development-2** encodes the DCM meeting decisions (see `../docs/MEETING_ALIGNMENT_REVIEW.md`). The latest run is `runs/aligned_20261105_004/` with 631 development evidence/context records. Its owner-review files (`OWNER_REVIEW_*.csv`) list the exact questions per record. The full CRR extraction that development-1 listed as the next step is complete: 722 rows are in `data/application_ratings_full/`.
+
+## 1. Rebuild the current result
+
+From `development/` (raw inputs are restored from the archive, not from git):
+
+```sh
+python3 -B tools/extract_inputs.py
+python3 -B -m unittest discover -s pvd_client_cohort_lab/tests -q
+python3 -B -m unittest discover -s pvd_client_cohort_lab/engine/tests -q
+python3 -B run_reference.py --out runs/reference_dev2_001 --test-observed-links --verify-reference
+python3 -B run_reference.py --out runs/aligned_<next> --test-observed-links --ratings-input data/application_ratings_full
+python3 -B tools/review_run.py runs/aligned_<next>
+```
+
+The `--verify-reference` command checks the development-2 sample counts (609 core / 619 combined). Use a fresh output name each time.
+
+## 2. Data requests arising from the meetings (send to Roksana / credit team)
+
+| Signal | What to request | Why |
+| --- | --- | --- |
+| SIG01 | Authoritative **drawn amount by facility** from LoanIQ (current and prior), with currency, **HSBC participation share**, facility type and `limit_cat`; the FX rate source and date to convert to EUR | CLO `facility_drawn_amount` is blank on all rows; the EUR 50m test needs EUR amounts and the inferred total needs a participation share |
+| SIG01 | Confirm whether `ag_acc_bal_drawn_sub_lim_usd` is HSBC's drawn balance in USD, and whether CLO sub-limit IDs equal Facilities `facility_id` | Only populated drawn field; the Cat A lookup relies on the ID match |
+| SIG01 | Prior snapshot for SoftBank TERM sub-limit `00010341075552511210201` (USD 179.7m) and the product of sub-limit `00010341075552607090201` (USD 200m, blank product) | Increase cannot be computed / product unknown |
+| SIG02 | Credit-team confirmation that `application_ratings.approval_dt` (linked by `credit_proposal_serial_no`) is the credit approval of the **new** facility, not a later review | Approval differs from creation for 41 of 50 contexts; SoftBank FCL was created 9 Jul and approved 17 Sep |
+| SIG02 | Product dictionary: which codes are RCF, term loan, bridge | `qualifying_product_codes` is empty, so no trigger can be evaluated |
+| SIG03A | Derivatives trade data: swaps (FX swaps first, IRS/CCS) with maturity date, notional, linked debt and roll/novation flag | Roll of a swap tied to maturing debt |
+| SIG03B | Pre-hedge / swap-pricing enquiry records; decide whether Bloomberg chat can be a source | New pre-hedge enquiries do not exist in markets systems today |
+| SIG06 | Financial covenant tests: covenant metric (net debt / EBITDA), actual value, maximum, operator, test date, approval state, facility/relationship ID | Half-a-turn pressure rule is implemented but has no data |
+| SIG07 / SIG05 | Decision on CME call-report access (MNPI, entitlements) | Rating advisory requests are only recorded in call reports |
+| SIG04 | A known target KYC case and identity route | Target export is header-only |
+
+## 3. Owner validation of the current evidence
+
+| Question | File | Needed outcome |
+| --- | --- | --- |
+| Are the 9 recent-approval facilities new RCF/term/bridge financing? | `runs/aligned_20261105_004/OWNER_REVIEW_SIG02.csv` | Product eligibility and event meaning confirmed; then set `sig02.qualifying_product_codes` and `definitions_verified` |
+| Which SIG01 drawing measure is authoritative, and is the Cat A link correct? | `OWNER_REVIEW_SIG01.csv` | Drawn field, FX, participation share confirmed; then set `sig01.definitions_verified` |
+| Should the five utilisation ratios above 70% be shown as context? | `OWNER_REVIEW_CTX_UTIL.csv` | Product, units, participation confirmed (context only — not covenant pressure) |
+| CRR scale and version semantics | `OWNER_REVIEW_CTX_CREDIT.csv` | Context definitions (rating advisory now comes from call reports) |
+| Did global latest selection omit Siemens DE? | archived `analysis/dcm_run_003_review_20261103/next_checks/01_facilities_partition_dates.sql` (in the zip) | Per-source/country current selection; the additional DE extraction remains deferred |
+
+Only switch a `definitions_verified` flag to `true` after the owner confirms the rule. Triggers stay blank until then.
+
+## 4. Dashboard follow-ups (requirements DASH03 / DASH04)
+
+- Add **debt maturity windows** (< 12m, 12–24m) from Facilities `loan_maturity_dt` / `facility_expiry_dt` and CLO maturity dates, at source grain, with no cross-source totals.
+- Define a **daily refresh** route once the sources' publishing schedules are confirmed. Today the dashboard is rebuilt manually with `python3 dashboard/build_dashboard.py`.
+
+## New multi-source rounds
+
+Use a fresh incoming folder; never ingest the historical `sql/DCM_Run_003/` tree as one round (its covenant file is Counterparty data). Templates are in `pvd_client_cohort_lab/sql_templates/current_20261103/` and `sig07_crr_20261104/`. Then run:
+
+```sh
+python3 -B run_reference.py --input data/round_next --ratings-input data/application_ratings_full \
+  --base-as-of <date> --as-of <date> --out runs/round_next_001 --test-observed-links
+```
+
+The observed-link flag remains a test assumption. For genuinely reviewed mappings or a new source such as actual covenants or derivatives, use the refresh/cohort workflows with `--approved`. Then register the source in `engine/bond_radar.py` `SOURCES` and add the rule tests.

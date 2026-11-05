@@ -1,36 +1,48 @@
 # DCM_Board_Dev
 
-Development workspace for the **DCM Bond Radar** signal dashboard.
+Development workspace for the **DCM Bond Radar** internal-signal dashboard (AI DCM / Use Case 6 – Market Signals).
+
+The signals follow the **DCM meeting decisions** (rule version `development-2`). The comparison of meeting requirements against the development, and what changed, is in [`docs/MEETING_ALIGNMENT_REVIEW.md`](docs/MEETING_ALIGNMENT_REVIEW.md).
 
 ## Contents
 
 | Path | What it is |
 |---|---|
-| `signal_workbooks_20261105_003.zip` | Signal workbook package: `SIGNAL_OVERVIEW.xlsx`, one workbook per retained signal (SIG01, SIG02, SIG03, SIG04, SIG06, SIG07), consolidated definitions/findings, the development snapshot and the LAF `sample board` the dashboard style is taken from. |
-| `dashboard/dcm_signals_dashboard.html` | **The dashboard.** A single self-contained HTML file (no CDN, fonts or network calls). Open it in a browser by double-clicking it. |
-| `dashboard/template.html` | Page layout, styles and rendering code, following the LAF board's style guide. |
-| `dashboard/build_dashboard.py` | Extracts every signal workbook into the embedded JSON payload and writes the dashboard. |
+| `docs/MEETING_ALIGNMENT_REVIEW.md` | Meeting requirements vs. development: decisions, gaps, data findings and the status after the update |
+| `dashboard/dcm_signals_dashboard.html` | **The dashboard.** A single self-contained HTML file (no CDN, fonts or network calls), in the LAF board's style. Open it in a browser |
+| `dashboard/template.html`, `dashboard/build_dashboard.py` | Dashboard layout and the script that embeds the workbook data |
+| `signal_workbooks_20261105_004/` | Current reports: `SIGNAL_OVERVIEW.xlsx`, one workbook per signal/context, `SIGNAL_DEFINITIONS.md`, `FINDINGS_AND_LIMITATIONS.md` |
+| `development/` | Active workspace: engine and tools (`pvd_client_cohort_lab/`, `tools/`), project documents (`PROJECT_STATE.md`, `NEXT_STEPS.md`, requirements v1.1), and the latest run `runs/aligned_20261105_004/` |
+| `signal_workbooks_20261105_003.zip` | Archived development-1 package (626 records, raw source sheets, raw inputs, LAF sample board). Kept unchanged as the baseline |
 
-## Dashboard sections
+## Signals (development-2)
 
-1. **Hero and KPIs**: 626 evidence records, 13 development test candidates, 224 needing validation, 402 unavailable, 0 confirmed business triggers.
-2. **Signal shape radar**: one shape per target mastergroup (Vodafone, Siemens Energy, SoftBank). It has two modes: *Development tests* (how far each test is met) and *Evidence coverage* (the share of each client's evidence that can be assessed).
-3. **Client matrix**: one row per client and one coloured cell per signal. Click a row to open the client drill-down for that client's SIG06, SIG02, SIG01 and SIG07 evidence and its coverage gaps.
-4. **Development tests**: strip charts of the SIG06 utilisation ratios against the >70% test and the SIG02 facility ages against the 90-day window.
-5. **Signal catalogue**: SIG01–SIG07 (SIG05 is shown as excluded), with purpose, evidence counts and the split of each signal's evidence.
-6. **Evidence explorer**: all 626 records with search, signal/client/status filters and pagination. Click a row to see every original evidence field and its source lineage.
-7. **Owner review queue**: the 35 SIG02/SIG06/SIG07 candidates and the question each one needs answered.
-8. **Definitions and findings**, **sources and freshness**, and **package verification**.
+| ID | Signal | Status |
+|---|---|---|
+| SIG01 | Drawing over EUR 50m on any Cat A bank facility | 8 comparisons, none material yet (drawn field / FX / participation) |
+| SIG02 | New RCF / term loan / bridge, dated by credit approval | 9 approved within 90 days |
+| SIG03A / SIG03B | Swap roll on maturing debt / new pre-hedge enquiry | No source |
+| SIG04 | KYC onboarding / signatory refresh | Empty export |
+| SIG05 | CME call-report keywords | Excluded (MNPI / entitlements) |
+| SIG06 | Covenant breach or pressure (within 0.5x of maximum) | Rule ready; no covenant data |
+| SIG07 | Rating advisory request (call reports) | CME not integrated |
+| CTX_UTIL / CTX_CREDIT | Utilisation, credit category and CRR | Context, not signals |
 
-All values appear exactly as saved in the workbooks. Amounts stay in their native currency, with no FX conversion or cross-source totals. Missing or empty sources are shown in grey and are never treated as "no activity".
+The "number of investor sales" signal has been dropped. All records are development evidence; no business trigger is confirmed.
 
-## Rebuilding
+## Rebuild
 
-Requires Python 3.10+ and `openpyxl`.
+Requires Python 3.10+ and `openpyxl`. Raw client exports are not committed; they are restored from the archived zip.
 
 ```sh
-python3 dashboard/build_dashboard.py --src signal_workbooks_20261105_003.zip
-# or point --src at an extracted package folder, and --out elsewhere if needed
+cd development
+python3 -B tools/extract_inputs.py
+python3 -B -m unittest discover -s pvd_client_cohort_lab/tests -q
+python3 -B -m unittest discover -s pvd_client_cohort_lab/engine/tests -q
+python3 -B run_reference.py --out runs/<new> --test-observed-links --ratings-input data/application_ratings_full
+python3 -B tools/review_run.py runs/<new> --previous <development-1 combined CSV>
+python3 -B tools/build_package.py runs/<new> ../<package> --previous-package ../signal_workbooks_20261105_003.zip
+cd .. && python3 dashboard/build_dashboard.py --src <package>
 ```
 
-The build checks that each signal's extracted evidence count matches `SIGNAL_OVERVIEW.xlsx` and fails if any record has no Evidence detail.
+After `build_package.py`, recalculate the workbook formulas (open and save in Excel, or LibreOffice headless) before building the dashboard.

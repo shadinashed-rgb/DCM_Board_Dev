@@ -1,0 +1,40 @@
+{
+  "base_as_of": "2026-11-03",
+  "crr_as_of": "2026-11-04",
+  "counts": {
+    "core_rows": 609,
+    "combined_rows": 631,
+    "crr_candidates": 22,
+    "populated_crr": 18,
+    "missing_crr": 4,
+    "utilisation_above_70": 5,
+    "recent_creation_candidates": 8,
+    "recent_approval_candidates": 9,
+    "sig02_approval_dates_linked": 50,
+    "material_drawing_candidates": 0,
+    "covenant_pressure_candidates": 0,
+    "sig01_zero_imputed": 4,
+    "by_signal": {
+      "CTX_CREDIT": 96,
+      "CTX_UTIL": 442,
+      "SIG01": 8,
+      "SIG02": 63
+    },
+    "combined_by_signal": {
+      "CTX_CREDIT": 118,
+      "CTX_UTIL": 442,
+      "SIG01": 8,
+      "SIG02": 63
+    }
+  },
+  "test_observed_links": true,
+  "reference_verified": false,
+  "rule_version": "development-2",
+  "combined_csv": "BOND_RADAR_SIGNAL_EVIDENCE.csv",
+  "sig02_approval_linking": {
+    "serial_and_cin_match": 63,
+    "approval_date_applied": 50,
+    "approval_equals_creation": 9
+  },
+  "qualification": "Development evidence; business trigger flags remain unverified. Rules follow the DCM meeting decisions recorded in docs/MEETING_ALIGNMENT_REVIEW.md."
+}

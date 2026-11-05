@@ -1,0 +1,91 @@
+{
+  "as_of": "2026-10-30",
+  "created_utc": "2026-11-02T11:29:22.550498+00:00",
+  "membership_policy": "Reviewed discovery cohort; historical membership is not inferred",
+  "code_sha256": "17a7965caef55513ed5c8be8738d2cedf28b2a8d4929a0d266c34bd460b32d5b",
+  "config_sha256": "3267d57c6447f4611923e3f65512a0acffdd8d72e90a8a6f7080b803cc549d87",
+  "approved_file_sha256": "e8a92e1584bf46ed2fe74968fb866bd3921b28c0a4fda84c45afe054cbd10d18",
+  "inputs": [
+    {
+      "source": "clo",
+      "path": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/inputs_all/clo.csv",
+      "sha256": "283eab093892d3241fce070668f77f661dbb0f3b5261f47ab055d84e365c5513",
+      "rows": 5,
+      "metadata": {
+        "synthetic": true,
+        "source": "clo",
+        "qualification": "Deliberately constructed fixture data, not bank records."
+      }
+    },
+    {
+      "source": "counterparty",
+      "path": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/inputs_all/counterparty.csv",
+      "sha256": "4743ac7882e6029318a4113ffdcad18f4174296a8502619ec9ab193d593fedce",
+      "rows": 3,
+      "metadata": {
+        "synthetic": true,
+        "source": "counterparty",
+        "qualification": "Deliberately constructed fixture data, not bank records."
+      }
+    },
+    {
+      "source": "facilities",
+      "path": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/inputs_all/facilities.csv",
+      "sha256": "4d017dbb56c52975dbb5e37e1cc8e08a6818abf696b6b6efaf6a676f23da6f83",
+      "rows": 3,
+      "metadata": {
+        "synthetic": true,
+        "source": "facilities",
+        "qualification": "Deliberately constructed fixture data, not bank records."
+      }
+    },
+    {
+      "source": "kyc",
+      "path": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/inputs_all/kyc.csv",
+      "sha256": "8937b384f345decbe9f3f1b50a4414d18a9afcdc1b9d40844c35db7f095527fc",
+      "rows": 3,
+      "metadata": {
+        "synthetic": true,
+        "source": "kyc",
+        "qualification": "Deliberately constructed fixture data, not bank records."
+      }
+    },
+    {
+      "source": "covenants",
+      "path": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/inputs_all/covenants.csv",
+      "sha256": "9e800ddd8b4973b4a30796f5ae6f31f5b8b318488397fc8e2f5056b56454697f",
+      "rows": 3,
+      "metadata": {
+        "synthetic": true,
+        "source": "covenants",
+        "qualification": "Deliberately constructed fixture data, not bank records."
+      }
+    },
+    {
+      "source": "drr",
+      "path": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/inputs_all/drr.csv",
+      "sha256": "8bc8ee3d2e37633833c66ea73258248631a28db06b7767a4a78830cf014c3928",
+      "rows": 3,
+      "metadata": {
+        "synthetic": true,
+        "source": "drr",
+        "qualification": "Deliberately constructed fixture data, not bank records."
+      }
+    },
+    {
+      "source": "pvd",
+      "path": "/Users/MNSD/Code Practice/CIB Project /Bond Radar Dev/pvd_client_cohort_lab/examples/demo-run/inputs_all/pvd.csv",
+      "sha256": "5a6d7c1017903940b8346e58152e6e00427f6eb1e6dcff08d1bba84f474bddf8",
+      "rows": 6,
+      "metadata": {
+        "synthetic": true,
+        "source": "pvd",
+        "qualification": "Deliberately constructed fixture data, not bank records."
+      }
+    }
+  ],
+  "issues": [
+    "PVD relationship/supergroup/key columns retain their own namespaces. No CIN/GID interpretation was inferred."
+  ],
+  "approved_links_count": 4
+}

@@ -1,0 +1,24 @@
+{
+  "base_as_of": "2026-11-03",
+  "crr_as_of": "2026-11-04",
+  "counts": {
+    "core_rows": 604,
+    "combined_rows": 614,
+    "crr_candidates": 10,
+    "populated_crr": 9,
+    "missing_crr": 1,
+    "utilisation_above_70": 5,
+    "recent_creation_candidates": 8,
+    "sig01_zero_imputed": 3,
+    "by_signal": {
+      "SIG01": 3,
+      "SIG02": 63,
+      "SIG06": 442,
+      "SIG07": 96
+    }
+  },
+  "test_observed_links": true,
+  "reference_verified": true,
+  "combined_csv": "crr/DCM_Run_003_All_Signal_Evidence_With_CRR.csv",
+  "qualification": "Development evidence; business trigger flags remain unverified. Full ratings exports are not present in the reference inputs."
+}

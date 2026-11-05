@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-04",
+  "python": "3.12.7",
+  "sqlite": "3.45.3",
+  "platform": "macOS-26.7.2-arm64-arm-64bit",
+  "tests": [
+    {
+      "command": "python3 -B -m unittest discover -s pvd_client_cohort_lab/tests -q",
+      "count": 48,
+      "result": "passed"
+    },
+    {
+      "command": "python3 -B -m unittest discover -s pvd_client_cohort_lab/engine/tests -q",
+      "count": 22,
+      "result": "passed"
+    }
+  ],
+  "reference_rebuild": "passed; see REFERENCE_RUN.json",
+  "relocation": "passed; see RELOCATION_CHECK.json",
+  "copied_raw_data": "exact original bytes; no raw modifications",
+  "original_project_files": "unchanged by this handover task",
+  "changes_in_new_workspace": [
+    "New handover documentation/catalog/integrity metadata",
+    "New portable root runner and portable source-lineage exporter",
+    "Copied active README navigation/path adaptation; existing engine and source-rule code unchanged"
+  ],
+  "exclusions": [
+    "Old root release archives except small Counterparty reference zip",
+    "Caches/.DS_Store/.git",
+    "Earlier regenerable intermediate databases/runs; current core lineage databases retained",
+    "This turn's generated verification run outputs; preserved current result and verification reports retained"
+  ],
+  "limits": [
+    "No live Starburst access or new SQL execution verified",
+    "Full Application Ratings data not supplied",
+    "Production identity rules and signal business triggers remain unverified"
+  ]
+}
