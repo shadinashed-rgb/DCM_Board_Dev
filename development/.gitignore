@@ -32,3 +32,6 @@ pvd_client_cohort_lab/generated_sql/
 !/runs/aligned_20261105_004/*.json
 !/DATA_CATALOG.csv
 !/Bond Radar Requirements.docx
+
+# Portfolio SQL pack checklists are templates (no client data)
+!/pvd_client_cohort_lab/sql_templates/portfolio_*/EXTRACTION_CHECKLIST.csv

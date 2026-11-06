@@ -14,6 +14,14 @@ Read START_HERE.md and PROJECT_STATE.md before making changes. This is the conti
 
 ## Decisions that must survive
 
+- **Portfolio mode** (`run_portfolio.py`, `portfolio.py`, `portfolio_sql.py`):
+  - Extract all clients. Project only the needed columns: CLO stays at sub-limit level, never `SELECT t.*`.
+  - Select snapshots per publishing partition, and split large sources into stable hash parts.
+  - Groups come from Counterparty Core (latest, active). Where it has none, use the unambiguous CLO/DRR native CIN → mastergroup; covenants use Facilities relationship → CIN; reviewed `--extra-links` can be added.
+  - Every route is labelled (`link_basis`) and none is a reviewed approval. Ambiguous CINs and invalid groups (`NO MSG`) get no group.
+  - A SIG01 candidate needs material **and** Cat A.
+  - Keep `profiles/source_columns_observed.json` in step with live schemas.
+
 - Targets: MG001356 VODAFONE; MG102229 Siemens Energy; MG101624 SOFTBANK. SIG05 and PVD sector aggregate are excluded from active scope.
 - SIG01 only: blank/missing drawn amount becomes zero with current/prior flags. Invalid numeric values and absent prior observations remain unavailable. Do not propagate this imputation to utilisation or ratings.
 - Counterparty location is `delta.prod_party_gda.counterparty_core`, not Hive. The old CLO/Counterparty handover is a matching reference, not the solution to adopt.
