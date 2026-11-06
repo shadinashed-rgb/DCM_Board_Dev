@@ -15,6 +15,8 @@ clients and retains S&P/CRR/other types where represented. The candidate registr
 is `profiles/sig07_source_candidates.json`; live schema/key/date review precedes
 runtime ingestion and any advisory trigger.
 
+**Portfolio mode (6 Nov 2026):** `portfolio_sql.py` writes the all-client SQL pack; `portfolio.py` (via `../run_portfolio.py`) builds every signal for every client found in the extracts; `portfolio_demo.py` creates a synthetic portfolio. See `../../docs/PORTFOLIO_EXTRACTION_GUIDE.md` and `../../docs/PORTFOLIO_SIGNAL_BUILD_GUIDE.md`.
+
 **Next extraction round:** follow [CURRENT_WORKFLOW.md](CURRENT_WORKFLOW.md).
 The 3 November update adds current-snapshot SQL in `sql_templates/current_20261103/`,
 effective-period Facilities selection, Delta Counterparty access, SIG01-only

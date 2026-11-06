@@ -134,7 +134,7 @@ class Lab:
         CREATE TABLE quality_issues(source TEXT, check_name TEXT, severity TEXT, affected_count INTEGER, detail TEXT);
         CREATE TABLE column_profile(source TEXT, column_name TEXT, rows INTEGER, missing INTEGER);
         CREATE TABLE source_profile(source TEXT, raw_rows INTEGER, earliest_observation TEXT, latest_observation TEXT, invalid_dates INTEGER, after_assessment INTEGER, latest_lag_days INTEGER);
-        CREATE TABLE identity_links(source TEXT, identifier_type TEXT, identifier_value TEXT, client_id TEXT, mastergroup_id TEXT, valid_from TEXT, valid_to TEXT);
+        CREATE TABLE identity_links(source TEXT, identifier_type TEXT, identifier_value TEXT, client_id TEXT, mastergroup_id TEXT, valid_from TEXT, valid_to TEXT, link_basis TEXT);
         CREATE INDEX identity_lookup ON identity_links(source,identifier_type,identifier_value);
         CREATE TABLE clo_enriched(raw_id INTEGER PRIMARY KEY, facility_key TEXT, observation_date TEXT, cin TEXT, gid TEXT, original_mastergroup TEXT, final_mastergroup TEXT, original_name TEXT, final_name_from_clo TEXT, match_status TEXT, match_rule TEXT, cin_candidates TEXT, gid_candidates TEXT, combined_candidates TEXT, cin_mapping_date TEXT, gid_mapping_date TEXT, mapping_policy TEXT, settings_verified INTEGER, client_id TEXT, identity_status TEXT);
         CREATE TABLE observations(source TEXT, record_key TEXT, observation_date TEXT, client_id TEXT, mastergroup_id TEXT, mapping_status TEXT, payload TEXT, raw_ids TEXT, PRIMARY KEY(source,record_key,observation_date));
@@ -255,8 +255,10 @@ class Lab:
         required=['source','identifier_type','identifier_value','client_id','mastergroup_id','valid_from','valid_to']
         with path.open(encoding='utf-8-sig',newline='') as handle:
             reader=csv.DictReader(handle)
-            if reader.fieldnames != required:
-                raise ValueError('identity_links.csv headers must be '+','.join(required))
+            # Optional 8th column link_basis records where a link came from (e.g. a reviewed
+            # approval vs. a Counterparty Core derived mapping); reviewed files omit it.
+            if reader.fieldnames not in (required, required+['link_basis']):
+                raise ValueError('identity_links.csv headers must be '+','.join(required)+'[,link_basis]')
             for row in reader:
                 if row['source'] not in SOURCES and row['source'] != '*':
                     raise ValueError('Unknown identity link source: '+row['source'])
@@ -265,19 +267,19 @@ class Lab:
                 lo,hi=day(row['valid_from']),day(row['valid_to'])
                 if row['valid_from'] and not lo or row['valid_to'] and not hi or lo and hi and lo>hi:
                     raise ValueError('Invalid identity link validity interval')
-                self.db.execute('INSERT INTO identity_links VALUES (?,?,?,?,?,?,?)',(row['source'],norm(row['identifier_type']),norm(row['identifier_value']),norm(row['client_id']),norm(row['mastergroup_id']),lo,hi))
+                self.db.execute('INSERT INTO identity_links VALUES (?,?,?,?,?,?,?,?)',(row['source'],norm(row['identifier_type']),norm(row['identifier_value']),norm(row['client_id']),norm(row['mastergroup_id']),lo,hi,(row.get('link_basis') or 'verified_link').strip()))
 
     def identity(self, source, pairs, when, fallback):
-        matches=set()
+        matches=set();bases=set()
         for kind,value in pairs:
             if norm(value):
-                for row in self.db.execute("SELECT client_id,mastergroup_id FROM identity_links WHERE source IN (?, '*') AND identifier_type=? AND identifier_value=? AND (valid_from IS NULL OR valid_from<=?) AND (valid_to IS NULL OR valid_to>=?)",(source,kind,norm(value),when,when)):
-                    matches.add((row[0],row[1]))
+                for row in self.db.execute("SELECT client_id,mastergroup_id,link_basis FROM identity_links WHERE source IN (?, '*') AND identifier_type=? AND identifier_value=? AND (valid_from IS NULL OR valid_from<=?) AND (valid_to IS NULL OR valid_to>=?)",(source,kind,norm(value),when,when)):
+                    matches.add((row[0],row[1]));bases.add(row[2] or 'verified_link')
         if len(matches)>1:
             return source+':UNRESOLVED:'+fallback,None,'ambiguous_identity_link'
         if matches:
             client,group=next(iter(matches))
-            return client,group,'verified_link'
+            return client,group,'+'.join(sorted(bases))
         cin=next((norm(v) for k,v in pairs if k=='CIN' and norm(v)),None)
         if cin:
             return 'CIN:'+cin,None,'verified_cin' if self.config['identity']['cin_namespace_verified'] else 'provisional_cin'
@@ -410,7 +412,8 @@ class Lab:
             if len(clients)>1:status+=';multiple_borrowers_unallocated'
             if len(groups)>1:status+=';multiple_groups_unallocated'
         elif source=='drr' and norm(rows[0].get('drr_uid')):
-            groups={norm(r.get('drr_mastergroup_id')) for r in rows if norm(r.get('drr_mastergroup_id'))}
+            invalid=set(self.config['counterparty']['invalid_mastergroups'])
+            groups={norm(r.get('drr_mastergroup_id')) for r in rows if norm(r.get('drr_mastergroup_id')) and norm(r.get('drr_mastergroup_id')) not in invalid}
             client='drr:EXPOSURE:'+key
             group=next(iter(groups)) if len(groups)==1 else None
             status='source_drr_uid_candidate;source_mastergroup_unverified'
@@ -423,7 +426,7 @@ class Lab:
             pairs=[('CIN',rows[0].get('cin')),('RELATIONSHIP_ID',rows[0].get('relationship_id')),('CUSTOMER_ID',rows[0].get('customer_id'))]
             if source=='pvd':pairs=[('JOI_RELATIONSHIP_ID',rows[0].get('joi_relationship_id'))]
             client,group,status=self.identity(source,pairs,observed,key)
-            if source=='drr' and norm(rows[0].get('drr_mastergroup_id')):
+            if source=='drr' and norm(rows[0].get('drr_mastergroup_id')) and norm(rows[0].get('drr_mastergroup_id')) not in self.config['counterparty']['invalid_mastergroups']:
                 source_group=norm(rows[0]['drr_mastergroup_id'])
                 if group and group!=source_group:status+=';group_link_conflict';group=None
                 else:group=source_group;status+=';source_mastergroup_unverified'
@@ -473,10 +476,12 @@ class Lab:
 
     def build_signals(self):
         latest='''SELECT * FROM (SELECT o.*,ROW_NUMBER() OVER(PARTITION BY source,record_key ORDER BY observation_date DESC) rn FROM observations o) WHERE rn=1 ORDER BY source,record_key'''
+        # Newest snapshot per source and group, computed once (a per-row MAX scan is quadratic at portfolio scale).
+        newest_by_group={(r[0],r[1]):r[2] for r in self.db.execute('SELECT source,mastergroup_id,MAX(observation_date) FROM observations GROUP BY source,mastergroup_id')}
         for obs in self.db.execute(latest):
             p=json.loads(obs['payload']);source=obs['source']
             if self.config.get('current_snapshot_only',False):
-                newest=self.db.execute('SELECT MAX(observation_date) FROM observations WHERE source=? AND mastergroup_id IS ?',(source,obs['mastergroup_id'])).fetchone()[0]
+                newest=newest_by_group.get((source,obs['mastergroup_id']))
                 if obs['observation_date']!=newest:continue
             if source=='clo':
                 self.util(obs,p,self.config['utilisation']['clo'])
@@ -513,7 +518,11 @@ class Lab:
         lookup=self.config['sig01']['limit_category_lookup']
         keys=[norm(p.get(c)) for c in lookup['clo_key_fields'] if norm(p.get(c))]
         if not keys:return None,'no_clo_facility_key',[]
-        rows=self.db.execute('SELECT DISTINCT norm('+ident(lookup['category_field'])+') FROM '+ident('raw_'+lookup['source'])+' WHERE norm('+ident(lookup['facility_field'])+') IN ('+','.join('?' for _ in keys)+')',keys).fetchall()
+        if not getattr(self,'_category_lookup_ready',False):
+            # One indexed lookup table instead of a full scan per CLO observation (portfolio scale).
+            self.db.execute('CREATE TEMP TABLE category_lookup AS SELECT DISTINCT norm('+ident(lookup['facility_field'])+') AS fid, norm('+ident(lookup['category_field'])+') AS cat FROM '+ident('raw_'+lookup['source']))
+            self.db.execute('CREATE INDEX category_lookup_fid ON category_lookup(fid)');self._category_lookup_ready=True
+        rows=self.db.execute('SELECT DISTINCT cat FROM category_lookup WHERE fid IN ('+','.join('?' for _ in keys)+')',keys).fetchall()
         values=sorted({r[0] for r in rows if r[0]})
         if not values:return None,'limit_category_unlinked',keys
         if len(values)>1:return None,'limit_category_conflicting',keys

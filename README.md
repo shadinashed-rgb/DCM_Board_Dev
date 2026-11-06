@@ -4,6 +4,18 @@ Development workspace for the **DCM Bond Radar** internal-signal dashboard (AI D
 
 The signals follow the **DCM meeting decisions** (rule version `development-2`). The comparison of meeting requirements against the development, and what changed, is in [`docs/MEETING_ALIGNMENT_REVIEW.md`](docs/MEETING_ALIGNMENT_REVIEW.md).
 
+## Branch `feature/portfolio-signal-extraction` — signals for all clients
+
+The development so far tested the extraction on three clients (Vodafone, Siemens Energy, SoftBank). This branch extracts the same sources for **every client** and builds the signals across the portfolio, discovering client groups from the data:
+
+| Step | Start here |
+|---|---|
+| 1. Extract all clients from all sources (profile → parts → checklist) | [`docs/PORTFOLIO_EXTRACTION_GUIDE.md`](docs/PORTFOLIO_EXTRACTION_GUIDE.md) and the SQL pack `development/pvd_client_cohort_lab/sql_templates/portfolio_20261106/` |
+| 2. Build every signal for every client (`run_portfolio.py`) and review the outputs | [`docs/PORTFOLIO_SIGNAL_BUILD_GUIDE.md`](docs/PORTFOLIO_SIGNAL_BUILD_GUIDE.md) |
+| What changed and how it was verified | `development/DEVELOPMENT_UPDATE_PORTFOLIO_20261106.md` |
+
+Try it without real data: `cd development && python3 -B pvd_client_cohort_lab/portfolio_demo.py --out data/portfolio_demo && python3 -B run_portfolio.py --input data/portfolio_demo --as-of 2026-11-06 --out runs/portfolio_demo_001`
+
 ## Contents
 
 | Path | What it is |

@@ -1,5 +1,17 @@
 # Local development validation
 
+## Portfolio mode: 6 November 2026
+
+**109 tests pass:** 74 package and 35 engine.
+
+New tests:
+- `tests/test_portfolio_sql.py` (7): no client filters; only observed columns; parses as Trino; buckets partition the data; partitioned snapshots
+- `tests/test_portfolio.py` (12): synthetic four-group portfolio covering SIG01 Cat A material, FX, not-Cat-A, SIG02 approval date, SIG06 pressure via the relationship route, KYC, CRR, maturity windows, ambiguous CIN, `NO MSG`, reviewed PVD link, missing part, header drift
+- `tests/test_portfolio_regression.py` (3): real three-client data in portfolio mode reproduces the targeted SIG01/SIG02 results and the 9 SIG02 candidates. Runs when the inputs are restored
+
+The engine changes (link basis, precomputed lookups, invalid DRR groups) keep the development-2 reference (609/619) and run 004 identical (631/631).
+
+
 ## Meeting-aligned rules: 5 November 2026 (development-2)
 
 **87 tests passed:** 52 package tests and 35 engine tests, up from 70.
