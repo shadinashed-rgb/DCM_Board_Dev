@@ -21,6 +21,7 @@ Try it without real data: `cd development && python3 -B pvd_client_cohort_lab/po
 | Path | What it is |
 |---|---|
 | `manager_meeting_20261106/` | Manager meeting pack: plan, one-pager, requirements, definitions, results, practicality assessment, next steps, Q&A, Word/PDF briefing and attachments |
+| `docs/signal_flowcharts/Bond_Radar_Signal_Logic.html` | One flowchart and plain-language definition per signal, plus the shared pipeline and client-group linking. Self-contained; prints one signal per page. Rebuild with `python3 docs/signal_flowcharts/build_signal_flowcharts.py` |
 | `docs/MEETING_ALIGNMENT_REVIEW.md` | Meeting requirements vs. development: decisions, gaps, data findings and the status after the update |
 | `dashboard/dcm_signals_dashboard.html` | **The dashboard.** A single self-contained HTML file (no CDN, fonts or network calls), in the LAF board's style. Open it in a browser |
 | `dashboard/template.html`, `dashboard/build_dashboard.py` | Dashboard layout and the script that embeds the workbook data |
